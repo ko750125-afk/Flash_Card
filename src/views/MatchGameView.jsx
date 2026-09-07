@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { ChevronLeft, RotateCcw, Award, Sparkles, Timer } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { ChevronLeft, RotateCcw, Award, Sparkles, Timer, Trophy } from 'lucide-react';
 import { speak } from '../utils/speech';
 import { playCorrectSound, playWrongSound, playJackpotSound, playCardClickSound } from '../utils/sound';
 
@@ -15,6 +15,18 @@ function shuffle(arr) {
 const SET_COUNT = 5;
 const WORDS_PER_SET = 6;
 
+// 밀리초를 0.1초 단위(MM:SS.s)로 변환
+function formatTime01(ms) {
+  if (ms === null || ms === undefined) return '--:--.-';
+  const totalTenths = Math.floor(ms / 100);
+  const tenths = totalTenths % 10;
+  const totalSeconds = Math.floor(totalTenths / 10);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${tenths}`;
+}
+
 export default function MatchGameView({ dayData, onBack }) {
   const allWords = useMemo(() => dayData.sets.flat(), [dayData]);
 
@@ -28,6 +40,18 @@ export default function MatchGameView({ dayData, onBack }) {
     return sets;
   }, [allWords]);
 
+  const storageKey = `fc_best_match_${dayData.key}`;
+
+  // 최고 기록(Best Record) 로드
+  const [bestTimeMs, setBestTimeMs] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? Number(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [currentSetIdx, setCurrentSetIdx] = useState(0);
   const [cards, setCards] = useState([]);
   const [firstSelected, setFirstSelected] = useState(null);
@@ -35,15 +59,28 @@ export default function MatchGameView({ dayData, onBack }) {
   const [failedIds, setFailedIds] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isGameDone, setIsGameDone] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const [isNewRecord, setIsNewRecord] = useState(false);
 
-  // 타이머 실행
+  const startTimeRef = useRef(null);
+  const timerRafRef = useRef(null);
+
+  // 0.1초 정밀 스톱워치 실행
   useEffect(() => {
     if (isGameDone) return;
-    const interval = setInterval(() => {
-      setTimerSeconds(s => s + 1);
-    }, 1000);
-    return () => clearInterval(interval);
+
+    startTimeRef.current = Date.now() - elapsedMs;
+
+    const tick = () => {
+      setElapsedMs(Date.now() - startTimeRef.current);
+      timerRafRef.current = requestAnimationFrame(tick);
+    };
+
+    timerRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (timerRafRef.current) cancelAnimationFrame(timerRafRef.current);
+    };
   }, [isGameDone]);
 
   // 세트 변경 시 12장 카드 셔플 생성
@@ -115,8 +152,28 @@ export default function MatchGameView({ dayData, onBack }) {
           if (currentSetIdx + 1 < SET_COUNT) {
             setCurrentSetIdx(prev => prev + 1);
           } else {
+            // 5세트 완료 처리
+            const finalTime = Date.now() - startTimeRef.current;
+            setElapsedMs(finalTime);
             setIsGameDone(true);
             playJackpotSound();
+
+            // 신기록 판별 및 갱신 저장
+            setBestTimeMs(prevBest => {
+              const isRecord = prevBest === null || finalTime < prevBest;
+              if (isRecord) {
+                setIsNewRecord(true);
+                try {
+                  localStorage.setItem(storageKey, String(finalTime));
+                } catch (e) {
+                  console.warn('Failed to save best score:', e);
+                }
+                return finalTime;
+              } else {
+                setIsNewRecord(false);
+                return prevBest;
+              }
+            });
           }
         }, 650);
       }
@@ -130,18 +187,14 @@ export default function MatchGameView({ dayData, onBack }) {
         setIsProcessing(false);
       }, 700);
     }
-  }, [isProcessing, matchedIds, firstSelected, cards.length, currentSetIdx]);
+  }, [isProcessing, matchedIds, firstSelected, cards.length, currentSetIdx, storageKey]);
 
   const handleRestart = () => {
     setCurrentSetIdx(0);
-    setTimerSeconds(0);
+    setElapsedMs(0);
     setIsGameDone(false);
-  };
-
-  const formatTime = (sec) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
+    setIsNewRecord(false);
+    startTimeRef.current = Date.now();
   };
 
   return (
@@ -155,9 +208,17 @@ export default function MatchGameView({ dayData, onBack }) {
           <div className="match-title">🧩 {dayData.label} 짝맞추기</div>
           <div className="match-sub">{dayData.topic}</div>
         </div>
-        <div className="match-timer-chip">
-          <Timer size={16} />
-          <span>{formatTime(timerSeconds)}</span>
+        <div className="match-stats-header">
+          {/* 실시간 0.1초 정밀 스톱워치 */}
+          <div className="match-timer-chip">
+            <Timer size={15} />
+            <span>{formatTime01(elapsedMs)}</span>
+          </div>
+          {/* 최고 기록 칩 */}
+          <div className="match-best-chip" title="내 최고 기록">
+            <Trophy size={13} color="#ffd700" />
+            <span>{bestTimeMs ? formatTime01(bestTimeMs) : '--:--.-'}</span>
+          </div>
         </div>
       </div>
 
@@ -201,27 +262,42 @@ export default function MatchGameView({ dayData, onBack }) {
           </div>
         </div>
       ) : (
-        /* ── 전체 5세트 완료 화면 ── */
+        /* ── 전체 5세트 완료 및 기록 갱신 결과 화면 ── */
         <div className="match-result-box">
-          <div className="match-res-emoji">🎉 🏆 🎉</div>
-          <div className="match-res-title">30단어 짝맞추기 완성!</div>
-          <p className="match-res-desc">
-            5세트 총 30쌍의 단어와 뜻을 완벽하게 매칭하셨습니다!
-          </p>
-          <div className="match-stat-row">
-            <div className="stat-pill">
-              <div className="lbl">완료 세트</div>
-              <div className="val g">5 / 5</div>
+          <div className="match-res-emoji">
+            {isNewRecord ? '👑 🏆 👑' : '🎉 👏 🎉'}
+          </div>
+
+          {isNewRecord && (
+            <div className="new-record-banner">
+              <Sparkles size={16} />
+              <span>NEW RECORD! 신기록 달성!</span>
+              <Sparkles size={16} />
             </div>
-            <div className="stat-pill">
-              <div className="lbl">총 소요 시간</div>
-              <div className="val a">{formatTime(timerSeconds)}</div>
+          )}
+
+          <div className="match-res-title">30단어 매칭 완주 성공!</div>
+          <p className="match-res-desc">
+            {isNewRecord
+              ? '축하합니다! 새로운 최고 기록을 세우셨습니다!'
+              : '수고하셨습니다! 계속해서 신기록에 도전해 보세요!'}
+          </p>
+
+          <div className="match-stat-row">
+            <div className={`stat-pill ${isNewRecord ? 'highlight-gold' : ''}`}>
+              <div className="lbl">이번 기록</div>
+              <div className="val a">{formatTime01(elapsedMs)}</div>
+            </div>
+            <div className="stat-pill highlight-gold">
+              <div className="lbl">최고 기록</div>
+              <div className="val g">{formatTime01(bestTimeMs)}</div>
             </div>
           </div>
+
           <div className="res-actions">
             <button className="btn btn-primary" onClick={handleRestart}>
               <RotateCcw size={18} />
-              <span>처음부터 다시하기</span>
+              <span>기록 단축 재도전!</span>
             </button>
             <button className="btn btn-ghost" onClick={onBack}>
               세트 목록으로
