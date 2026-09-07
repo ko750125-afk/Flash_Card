@@ -11,10 +11,12 @@ const ALL_DAY_KEYS = Array.from({ length: 40 }, (_, i) =>
 
 export default function HomeView({
   wordsData, memorized, seenWords, completedDays, reviewWords,
+  rewardBalance = 0, onResetReward,
   onSelectDay, onGoReview,
   onRestore, onClearAll,
 }) {
   const [isBackupOpen, setIsBackupOpen] = useState(false);
+  const [showPayoutConfirm, setShowPayoutConfirm] = useState(false);
   const { containerRef, isGrabbing, events, hasDraggedRef } = useDragScroll();
 
   // 빠른 접근을 위한 맵
@@ -43,6 +45,16 @@ export default function HomeView({
     if (!data) return { mem: 0, total: 30 };
     const all = data.sets.flat();
     return { mem: all.filter(w => memorized.has(w.id)).length, total: all.length };
+  };
+
+  const handleClaimPayout = () => {
+    if (rewardBalance <= 0) return;
+    setShowPayoutConfirm(true);
+  };
+
+  const confirmPayout = () => {
+    onResetReward?.();
+    setShowPayoutConfirm(false);
   };
 
   const BADGE = {
@@ -80,6 +92,56 @@ export default function HomeView({
           </button>
         </div>
       </div>
+
+      {/* ── 룰렛 누적 보상금 배너 ── */}
+      <div className={`reward-balance-card ${rewardBalance > 0 ? 'has-money' : ''}`}>
+        <div className="rb-left">
+          <div className="rb-icon-box">💰</div>
+          <div className="rb-info">
+            <div className="rb-title">룰렛 누적 당첨 보상금</div>
+            <div className="rb-amount">
+              {rewardBalance.toLocaleString()}<span className="unit">원</span>
+            </div>
+          </div>
+        </div>
+        <button
+          className={`btn-payout-action ${rewardBalance > 0 ? 'active' : 'disabled'}`}
+          onClick={handleClaimPayout}
+          disabled={rewardBalance <= 0}
+          title={rewardBalance > 0 ? '보상금을 수령하고 0원으로 초기화합니다' : '수령할 보상금이 없습니다'}
+        >
+          <span>입금완료</span>
+        </button>
+      </div>
+
+      {/* ── 입금완료 확인 모달 ── */}
+      {showPayoutConfirm && (
+        <div className="modal-overlay" onClick={() => setShowPayoutConfirm(false)}>
+          <div className="modal-card payout-confirm-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="payout-emoji">💸 💳</div>
+              <h2 className="modal-title">보상금 입금완료 처리</h2>
+            </div>
+            <div className="modal-body">
+              <p className="payout-msg">
+                현재 누적된 보상금 <strong>{rewardBalance.toLocaleString()}원</strong>을<br />
+                모두 지급/수령하셨습니까?
+              </p>
+              <div className="payout-notice">
+                확인을 누르시면 보상금 잔액이 <strong>0원</strong>으로 초기화됩니다.
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-primary btn-confirm-payout" onClick={confirmPayout}>
+                네, 입금완료 (0원 리셋)
+              </button>
+              <button className="btn btn-ghost" onClick={() => setShowPayoutConfirm(false)}>
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 백업 & 복원 모달 ── */}
       <BackupModal

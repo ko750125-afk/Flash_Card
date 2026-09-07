@@ -16,6 +16,38 @@ export default function App() {
   const memorized = useLocalSet('fc_memorized'); // 암기한 단어 ID Set
   const seenWords  = useLocalSet('fc_seen');     // 학습 완료(본) 단어 ID Set
 
+  // 룰렛 누적 보상금 상태 (기본 0원)
+  const [rewardBalance, setRewardBalance] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fc_reward_balance');
+      return saved ? Number(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
+  const handleAddReward = useCallback((amount) => {
+    if (!amount || amount <= 0) return;
+    setRewardBalance(prev => {
+      const next = prev + amount;
+      try {
+        localStorage.setItem('fc_reward_balance', String(next));
+      } catch (e) {
+        console.warn('Failed to save reward balance:', e);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleResetReward = useCallback(() => {
+    setRewardBalance(0);
+    try {
+      localStorage.setItem('fc_reward_balance', '0');
+    } catch (e) {
+      console.warn('Failed to reset reward balance:', e);
+    }
+  }, []);
+
   /* ── 내비게이션 상태 ── */
   const [view, setView]               = useState('home');     // 'home' | 'setSelect' | 'study' | 'review' | 'allWords' | 'speedTest' | 'roulette' | 'matchGame'
   const [currentDayKey, setCurrentDayKey]   = useState(null); // 'DAY01' ...
@@ -118,7 +150,8 @@ export default function App() {
   const handleClearAll = useCallback(() => {
     memorized.clear();
     seenWords.clear();
-  }, [memorized, seenWords]);
+    handleResetReward();
+  }, [memorized, seenWords, handleResetReward]);
 
   /* ── 렌더 ── */
   return (
@@ -130,6 +163,8 @@ export default function App() {
           seenWords={seenWords.set}
           completedDays={completedDays}
           reviewWords={reviewWords}
+          rewardBalance={rewardBalance}
+          onResetReward={handleResetReward}
           onSelectDay={goSetSelect}
           onGoReview={goReview}
           onRestore={handleRestore}
@@ -179,6 +214,8 @@ export default function App() {
       {view === 'roulette' && currentDayData && (
         <RouletteView
           dayData={currentDayData}
+          rewardBalance={rewardBalance}
+          onWinReward={handleAddReward}
           onHome={goHome}
           onBack={() => goSetSelect(currentDayKey)}
         />

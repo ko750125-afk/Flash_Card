@@ -14,7 +14,7 @@ const ROULETTE_SLOTS = [
 
 const SECTOR_ANGLE = 360 / ROULETTE_SLOTS.length; // 60도
 
-export default function RouletteView({ dayData, onHome, onBack }) {
+export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, onHome, onBack }) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
   const [result, setResult] = useState(null);
@@ -62,11 +62,14 @@ export default function RouletteView({ dayData, onHome, onBack }) {
 
       if (selectedSlot.isWin) {
         playJackpotSound();
+        if (onWinReward && selectedSlot.amount > 0) {
+          onWinReward(selectedSlot.amount);
+        }
       } else {
         playFailSound();
       }
     }, 4500);
-  }, [isSpinning, rotationDeg]);
+  }, [isSpinning, rotationDeg, onWinReward]);
 
   useEffect(() => {
     return () => {
@@ -197,9 +200,14 @@ export default function RouletteView({ dayData, onHome, onBack }) {
               <div className="prize-label">룰렛 결과</div>
               <div className="prize-val">{result.label}</div>
             </div>
+            {result.isWin && (
+              <div className="result-total-chip">
+                💰 누적 총 보상금: <strong>{(rewardBalance + result.amount).toLocaleString()}원</strong>
+              </div>
+            )}
             <p className="result-desc">
               {result.isWin
-                ? `${result.label} 보상에 당첨되었습니다! 성실한 단어 암기 학습을 축하드립니다!`
+                ? `${result.label} 보상에 당첨되었습니다! 메인 화면의 누적 보상금에 즉시 축적되었습니다.`
                 : '비록 꽝이지만 30단어를 모두 완벽하게 정복하셨습니다! 다음 DAY에서 대박을 노려보세요!'}
             </p>
             <div className="result-actions">
