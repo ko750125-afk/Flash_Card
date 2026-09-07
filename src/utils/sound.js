@@ -229,3 +229,35 @@ export function playFailSound() {
     console.warn('Fail sound failed:', e);
   }
 }
+
+/**
+ * 짝맞추기 게임에서 한글 카드 또는 일반 카드 클릭 시 경쾌한 팝(Pop) 터치음
+ */
+export function playCardClickSound() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    // 톡! 소리를 내는 피치 드롭 (600Hz -> 200Hz 빠른 슬라이드)
+    osc.frequency.setValueAtTime(580, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.06);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.07);
+  } catch (e) {
+    console.warn('Card click sound failed:', e);
+  }
+}
+

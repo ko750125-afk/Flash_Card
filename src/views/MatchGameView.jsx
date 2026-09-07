@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronLeft, RotateCcw, Award, Sparkles, Timer } from 'lucide-react';
 import { speak } from '../utils/speech';
-import { playCorrectSound, playWrongSound, playJackpotSound } from '../utils/sound';
+import { playCorrectSound, playWrongSound, playJackpotSound, playCardClickSound } from '../utils/sound';
 
 function shuffle(arr) {
   const res = [...arr];
@@ -76,9 +76,11 @@ export default function MatchGameView({ dayData, onBack }) {
   const handleCardClick = useCallback((card) => {
     if (isProcessing || matchedIds.has(card.id)) return;
 
-    // 영단어 카드이면 발음 재생
+    // 영단어 카드이면 발음 재생, 한글 카드이면 경쾌한 팝 클릭 사운드 재생
     if (card.type === 'en') {
       speak(card.text);
+    } else {
+      playCardClickSound();
     }
 
     // 첫 번째 선택
