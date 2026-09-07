@@ -5,6 +5,7 @@ import HomeView from './views/HomeView';
 import SetSelectView from './views/SetSelectView';
 import StudyView from './views/StudyView';
 import ReviewView from './views/ReviewView';
+import AllWordsView from './views/AllWordsView';
 import './index.css';
 
 export default function App() {
@@ -62,9 +63,15 @@ export default function App() {
 
   const goReview = useCallback(() => setView('review'), []);
 
+  const goAllWords = useCallback(() => setView('allWords'), []);
+
   /** 학습 완료 시 해당 단어들을 "본 것"으로 기록 */
   const handleStudyComplete = useCallback((wordIds) => {
     seenWords.addMany(wordIds);
+  }, [seenWords]);
+
+  const handleWordSeen = useCallback((wordId) => {
+    seenWords.add(wordId);
   }, [seenWords]);
 
   /* ── 현재 학습 단어 목록 ── */
@@ -127,7 +134,18 @@ export default function App() {
           memorized={memorized.set}
           seenWords={seenWords.set}
           onSelectSet={goStudy}
+          onSelectAllWords={goAllWords}
           onBack={goHome}
+        />
+      )}
+
+      {view === 'allWords' && currentDayData && (
+        <AllWordsView
+          dayData={currentDayData}
+          memorized={memorized.set}
+          toggleMemorized={memorized.toggle}
+          onWordSeen={handleWordSeen}
+          onBack={() => goSetSelect(currentDayKey)}
         />
       )}
 

@@ -1182,3 +1182,347 @@ button {
   background: rgba(255, 255, 255, 0.14);
   border-radius: 3px;
 }
+
+/* ============================================================
+   30단어 전체 한눈에 보기 (AllWordsView)
+   ============================================================ */
+.all-words-view {
+  background: var(--bg);
+  cursor: grab;
+}
+
+.all-words-view.grabbing {
+  cursor: grabbing;
+}
+
+.aw-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(13, 34, 24, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: calc(14px + var(--safe-t)) 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aw-header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aw-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.aw-header-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aw-header-topic {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #fb923c;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aw-header-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.aw-mem-num {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.aw-tot-num {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.aw-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.aw-progress-fill {
+  height: 100%;
+  background: var(--green);
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.aw-progress-fill.golden {
+  background: linear-gradient(90deg, #f0b93b, #ffd700);
+  box-shadow: 0 0 8px rgba(240, 185, 59, 0.6);
+}
+
+.aw-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aw-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.aw-filter-btn {
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: var(--r-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  touch-action: manipulation;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.aw-filter-btn:hover {
+  background: var(--surface-h);
+  color: var(--text);
+}
+
+.aw-filter-btn.active {
+  background: var(--accent);
+  color: #162419;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.aw-btn-toggle-meaning {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: var(--r-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  touch-action: manipulation;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.aw-btn-toggle-meaning:hover {
+  background: var(--surface-h);
+  color: var(--text);
+}
+
+.aw-btn-toggle-meaning.active {
+  background: rgba(240, 185, 59, 0.15);
+  border-color: rgba(240, 185, 59, 0.4);
+  color: var(--accent);
+}
+
+/* 30단어 본문 리스트 */
+.aw-list-body {
+  padding: 12px 16px calc(48px + var(--safe-b));
+}
+
+.aw-empty-msg {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.aw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aw-card-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.12s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.aw-card-row:active {
+  transform: scale(0.985);
+}
+
+.aw-card-row:hover {
+  background: var(--surface-h);
+  border-color: var(--border-s);
+}
+
+.aw-card-row.is-memorized {
+  background: rgba(74, 222, 128, 0.05);
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.aw-card-row.is-memorized:hover {
+  background: rgba(74, 222, 128, 0.09);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.aw-card-row.is-playing {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(240, 185, 59, 0.25);
+}
+
+.aw-row-num {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-dim2);
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+
+.aw-card-row.is-memorized .aw-row-num {
+  color: rgba(74, 222, 128, 0.6);
+}
+
+.aw-row-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.aw-word-en {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aw-card-row.is-memorized .aw-word-en {
+  color: #fff;
+}
+
+.aw-btn-sound {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.aw-btn-sound:active {
+  transform: scale(0.9);
+  background: rgba(240, 185, 59, 0.2);
+}
+
+.sound-pulse {
+  animation: soundBeat 0.4s ease alternate infinite;
+  color: #ffd700;
+}
+
+@keyframes soundBeat {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.25); }
+}
+
+.aw-word-ko {
+  font-family: var(--font);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  line-height: 1.35;
+  word-break: keep-all;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.aw-word-ko.meaning-hidden {
+  opacity: 0.15;
+  filter: blur(4px);
+  user-select: none;
+}
+
+.aw-card-row:hover .aw-word-ko.meaning-hidden {
+  opacity: 0.9;
+  filter: blur(0);
+}
+
+.aw-btn-check {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.15s, color 0.15s;
+}
+
+.aw-btn-check:active {
+  transform: scale(0.88);
+}
+
+.aw-btn-check.checked {
+  color: var(--green);
+}
+
+.icon-checked {
+  color: var(--green);
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.4));
+}
+
+.icon-unchecked {
+  color: var(--text-dim2);
+}
+
+.aw-btn-check:hover .icon-unchecked {
+  color: var(--text-dim);
+}
+

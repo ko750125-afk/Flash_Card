@@ -8,7 +8,7 @@ const SET_META = [
 ];
 
 export default function SetSelectView({
-  dayData, memorized, seenWords, onSelectSet, onBack,
+  dayData, memorized, seenWords, onSelectSet, onSelectAllWords, onBack,
 }) {
   const allWords   = dayData.sets.flat();
   const totalMem   = allWords.filter(w => memorized.has(w.id)).length;
@@ -75,39 +75,38 @@ export default function SetSelectView({
           );
         })}
 
-        {/* 전체 30단어 */}
+        {/* 전체 30단어 한눈에 보기 */}
         <div
           className="set-card all-set"
           onClick={() => {
-            const unmemorized = allWords.filter(w => !memorized.has(w.id));
-            const firstWord = unmemorized.length > 0 ? unmemorized[0] : allWords[0];
-            if (firstWord) speak(firstWord.en);
-            onSelectSet('all');
+            if (onSelectAllWords) {
+              onSelectAllWords();
+            } else {
+              onSelectSet('all');
+            }
           }}
           role="button"
           tabIndex={0}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              const unmemorized = allWords.filter(w => !memorized.has(w.id));
-              const firstWord = unmemorized.length > 0 ? unmemorized[0] : allWords[0];
-              if (firstWord) speak(firstWord.en);
-              onSelectSet('all');
+              if (onSelectAllWords) onSelectAllWords();
+              else onSelectSet('all');
             }
           }}
         >
-          <div className="sc-icon">📚</div>
+          <div className="sc-icon">📋</div>
           <div className="sc-body">
             <div className="sc-status">
-              {totalMem === 30 ? '🎉 30단어 완주 완료' : `남은 단어 ${30 - totalMem}개`}
+              {totalMem === 30 ? '🎁 30단어 정복 완료' : `한눈에 전체 데이터 보기 · 남은 단어 ${30 - totalMem}개`}
             </div>
-            <div className="sc-name">30단어 전체</div>
-            <div className="sc-range">SET 1 + SET 2 + SET 3</div>
+            <div className="sc-name">30단어 전체 한눈에 보기</div>
+            <div className="sc-range">전체 리스트 · 터치 시 발음 & 즉시 암기 체크</div>
           </div>
           <div className="sc-stat">
             <div className="sc-mem">{totalMem}</div>
             <div className="sc-tot">/ 30 암기</div>
           </div>
-          <ChevronRight size={16} color="rgba(240,185,59,0.4)" />
+          <ChevronRight size={16} color="rgba(240,185,59,0.5)" />
         </div>
       </div>
     </div>
