@@ -28,14 +28,8 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
     }
   }, [dayData.key]);
 
-  // 룰렛 1회 완료 여부 확인
-  const [isRouletteUsed, setIsRouletteUsed] = useState(() => {
-    try {
-      return localStorage.getItem(`fc_roulette_done_${dayData.key}`) === 'true';
-    } catch {
-      return false;
-    }
-  });
+  // 룰렛 1회 완료 여부 확인 (테스트 모드: 무제한 허용)
+  const isRouletteUsed = false; // [테스트 모드] 대표님 테스트를 위해 무제한 허용
 
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
@@ -45,7 +39,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
   const soundTimerRef = useRef(null);
 
   const handleSpin = useCallback(() => {
-    if (isSpinning || isRouletteUsed) return;
+    if (isSpinning) return;
 
     setIsSpinning(true);
     setShowResultModal(false);
@@ -96,14 +90,6 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
       setResult(selectedSlot);
       setShowResultModal(true);
 
-      // 룰렛 1회 사용 완료 영구 기록
-      try {
-        localStorage.setItem(`fc_roulette_done_${dayData.key}`, 'true');
-        setIsRouletteUsed(true);
-      } catch (e) {
-        console.warn('Failed to save roulette done flag:', e);
-      }
-
       if (selectedSlot.isWin) {
         playJackpotSound();
         if (onWinReward && selectedSlot.amount > 0) {
@@ -114,7 +100,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         playFailSound();
       }
     }, SPIN_DURATION_MS);
-  }, [isSpinning, isRouletteUsed, rotationDeg, onWinReward, isDoubleChance, dayData.key]);
+  }, [isSpinning, rotationDeg, onWinReward, isDoubleChance]);
 
   useEffect(() => {
     return () => {
@@ -295,7 +281,13 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
                 : '비록 꽝이지만 30단어를 모두 완벽하게 정복하셨습니다! 다음 DAY에서 대박을 노려보세요!'}
             </p>
             <div className="result-actions">
-              <button className="btn btn-primary" onClick={onHome}>
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowResultModal(false)}
+              >
+                🎰 룰렛 다시 돌려보기
+              </button>
+              <button className="btn btn-ghost" onClick={onHome}>
                 🏠 메인 홈으로
               </button>
               <button

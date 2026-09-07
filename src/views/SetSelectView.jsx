@@ -144,41 +144,11 @@ export default function SetSelectView({
         {/* 4. 암기 완료 시에만 노출되는 룰렛 보상 카드 */}
         {isAllMastered && (() => {
           let isDouble = false;
-          let isRouletteDone = false;
           try {
             const hasFlag = localStorage.getItem(`fc_double_reward_${dayData.key}`) === 'true';
             const bestScore = localStorage.getItem(`fc_best_match_${dayData.key}`);
             isDouble = hasFlag || (bestScore ? Number(bestScore) < 60000 : false);
-            isRouletteDone = localStorage.getItem(`fc_roulette_done_${dayData.key}`) === 'true';
           } catch {}
-
-          if (isRouletteDone) {
-            return (
-              <div
-                className="set-card roulette-set-card done-locked"
-                role="button"
-                tabIndex={-1}
-                title="해당 DAY의 룰렛 보상(1회 한정)이 완료되었습니다"
-              >
-                <div className="sc-icon">✅</div>
-                <div className="sc-body">
-                  <div className="sc-status" style={{ color: 'var(--text-dim)', fontWeight: 700 }}>
-                    보상 기회 종료
-                  </div>
-                  <div className="sc-name" style={{ color: 'rgba(240, 235, 224, 0.5)' }}>
-                    룰렛 보상 완료 (1회 한정)
-                  </div>
-                  <div className="sc-range" style={{ color: 'var(--text-dim2)' }}>
-                    보상 룰렛 참여가 완료되었습니다. (짝맞추기 복습은 계속 가능!)
-                  </div>
-                </div>
-                <div className="sc-stat">
-                  <div className="sc-mem" style={{ color: 'var(--text-dim)' }}>완료</div>
-                  <div className="sc-tot">수령 완료</div>
-                </div>
-              </div>
-            );
-          }
 
           return (
             <div
@@ -191,7 +161,7 @@ export default function SetSelectView({
               <div className="sc-icon">{isDouble ? '🔥' : '🎰'}</div>
               <div className="sc-body">
                 <div className="sc-status" style={{ color: isDouble ? '#ff9800' : '#ffd700', fontWeight: 800 }}>
-                  {isDouble ? '🔥 짝맞추기 59초대 클리어! [2배 찬스 발동]' : '🎁 30단어 정복 특별 보상'}
+                  {isDouble ? '🔥 짝맞추기 2배 당첨! [2배 찬스 발동]' : '🎁 30단어 정복 특별 보상'}
                 </div>
                 <div className="sc-name" style={{ color: '#fff' }}>
                   룰렛 보상 {isDouble && <span className="double-tag-pill">2배 찬스!</span>}
@@ -204,7 +174,7 @@ export default function SetSelectView({
                 <div className="sc-mem" style={{ color: isDouble ? '#ffeb3b' : '#ffd700' }}>
                   {isDouble ? '최대 4만원' : '최대 2만원'}
                 </div>
-                <div className="sc-tot">{isDouble ? '2배 룰렛' : '룰렛 돌리기 (1회)'}</div>
+                <div className="sc-tot">{isDouble ? '2배 룰렛' : '룰렛 돌리기'}</div>
               </div>
               <ChevronRight size={18} color={isDouble ? '#ff9800' : '#f0b93b'} />
             </div>

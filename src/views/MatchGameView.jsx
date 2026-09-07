@@ -12,7 +12,7 @@ function shuffle(arr) {
   return res;
 }
 
-const SET_COUNT = 5;
+const SET_COUNT = 1; // [테스트 모드] 빠른 검증을 위해 1세트(6단어)로 단축
 const WORDS_PER_SET = 6;
 
 // 밀리초를 0.1초 단위(MM:SS.s)로 변환
