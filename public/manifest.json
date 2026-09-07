@@ -1,7 +1,7 @@
 {
-  "name": "영단어 마스터 (Flash Card)",
-  "short_name": "영단어 마스터",
-  "description": "DAY01~DAY40 영어 단어를 플래시카드로 마스터하세요.",
+  "name": "돈벼락 영단어 (Flash Card)",
+  "short_name": "돈벼락 영단어",
+  "description": "DAY01~DAY40 영어 단어를 플래시카드로 마스터하고 보상금을 획득하세요.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d2218",

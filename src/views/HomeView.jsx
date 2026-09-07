@@ -74,7 +74,7 @@ export default function HomeView({
       {/* ── 스티키 헤더 ── */}
       <div className="home-sticky">
         <div>
-          <h1 className="home-title">📚 영단어 마스터</h1>
+          <h1 className="home-title">⚡💰 돈벼락 영단어</h1>
           <p className="home-subtitle">DAY01 ~ DAY40 (총 1,200단어)</p>
         </div>
         <div className="hdr-right-row">
