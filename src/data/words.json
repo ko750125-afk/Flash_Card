@@ -165,162 +165,162 @@
   {
     "key": "DAY02",
     "label": "DAY 02",
-    "topic": "고등핵심어휘(2/10)",
+    "topic": "초등필수어휘(2)",
     "sets": [
       [
         {
           "id": "D02S1_01",
-          "en": "Impression",
-          "ko": "인상, 감명, 감동"
+          "en": "sun",
+          "ko": "태양"
         },
         {
           "id": "D02S1_02",
-          "en": "Insist",
-          "ko": "주장하다, 고집하다, 요구하다"
+          "en": "moon",
+          "ko": "달"
         },
         {
           "id": "D02S1_03",
-          "en": "household",
-          "ko": "가족, 가족, 가족의"
+          "en": "tree",
+          "ko": "나무"
         },
         {
           "id": "D02S1_04",
-          "en": "dramatic",
-          "ko": "극적인, 연극의"
+          "en": "water",
+          "ko": "물"
         },
         {
           "id": "D02S1_05",
-          "en": "atmosphere",
-          "ko": "대기, 공기, 분위기"
+          "en": "fire",
+          "ko": "불"
         },
         {
           "id": "D02S1_06",
-          "en": "suppose",
-          "ko": "가정하다, 믿다, 생각하다"
+          "en": "bread",
+          "ko": "빵"
         },
         {
           "id": "D02S1_07",
-          "en": "shift",
-          "ko": "옮기다, 바꾸다, 변화, 교대, 교대 근무"
+          "en": "milk",
+          "ko": "우유"
         },
         {
           "id": "D02S1_08",
-          "en": "rare",
-          "ko": "드문, 휴게안"
+          "en": "friend",
+          "ko": "친구"
         },
         {
           "id": "D02S1_09",
-          "en": "reject",
-          "ko": "거절하다"
+          "en": "school",
+          "ko": "학교"
         },
         {
           "id": "D02S1_10",
-          "en": "delay",
-          "ko": "연계하다, 미루다, 지연, 지체"
+          "en": "teacher",
+          "ko": "선생님"
         }
       ],
       [
         {
           "id": "D02S2_01",
-          "en": "influence",
-          "ko": "영향, 영향을 주다"
+          "en": "happy",
+          "ko": "행복한"
         },
         {
           "id": "D02S2_02",
-          "en": "excess",
-          "ko": "지나침, 과잉, 초과의, 여분의"
+          "en": "smile",
+          "ko": "미소"
         },
         {
           "id": "D02S2_03",
-          "en": "private",
-          "ko": "사적인, 게인의"
+          "en": "rain",
+          "ko": "비"
         },
         {
           "id": "D02S2_04",
-          "en": "caution",
-          "ko": "조심, 주의, 주의를 주다"
+          "en": "snow",
+          "ko": "눈"
         },
         {
           "id": "D02S2_05",
-          "en": "defeat",
-          "ko": "패배시키다, 이기다, 패배, 정복"
+          "en": "bird",
+          "ko": "새"
         },
         {
           "id": "D02S2_06",
-          "en": "mutual",
-          "ko": "상호의, 서로의"
+          "en": "fish",
+          "ko": "물고기"
         },
         {
           "id": "D02S2_07",
-          "en": "lower",
-          "ko": "낮추다, 내리다, 더 낮은 쪽을"
+          "en": "pencil",
+          "ko": "연필"
         },
         {
           "id": "D02S2_08",
-          "en": "opportunity",
-          "ko": "기회"
+          "en": "chair",
+          "ko": "의자"
         },
         {
           "id": "D02S2_09",
-          "en": "valuable",
-          "ko": "같이 있는, 그중한"
+          "en": "table",
+          "ko": "탁자"
         },
         {
           "id": "D02S2_10",
-          "en": "conscious",
-          "ko": "의식하는, 알고 있는"
+          "en": "music",
+          "ko": "음악"
         }
       ],
       [
         {
           "id": "D02S3_01",
-          "en": "aid",
-          "ko": "지원, 도움, 돕다"
+          "en": "baby",
+          "ko": "아기"
         },
         {
           "id": "D02S3_02",
-          "en": "respond",
-          "ko": "반응하다, 응답하다"
+          "en": "family",
+          "ko": "가족"
         },
         {
           "id": "D02S3_03",
-          "en": "publish",
-          "ko": "출판하다, 발표하다"
+          "en": "house",
+          "ko": "집"
         },
         {
           "id": "D02S3_04",
-          "en": "decorate",
-          "ko": "장식하다"
+          "en": "green",
+          "ko": "초록색"
         },
         {
           "id": "D02S3_05",
-          "en": "relate",
-          "ko": "관련시키다, 이야기하다"
+          "en": "blue",
+          "ko": "파란색"
         },
         {
           "id": "D02S3_06",
-          "en": "interrupt",
-          "ko": "방해하다"
+          "en": "red",
+          "ko": "빨간색"
         },
         {
           "id": "D02S3_07",
-          "en": "probably",
-          "ko": "아마"
+          "en": "yellow",
+          "ko": "노란색"
         },
         {
           "id": "D02S3_08",
-          "en": "reward",
-          "ko": "보상, 대가, 보상하다"
+          "en": "run",
+          "ko": "달리다"
         },
         {
           "id": "D02S3_09",
-          "en": "come up with",
-          "ko": "무엇을 생각해내다"
+          "en": "jump",
+          "ko": "뛰다"
         },
         {
           "id": "D02S3_10",
-          "en": "figure out",
-          "ko": "무엇을 이해하다, 무엇을 알아내다"
+          "en": "sleep",
+          "ko": "자다"
         }
       ]
     ]
