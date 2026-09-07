@@ -2984,6 +2984,51 @@ button {
   color: var(--text-dim);
 }
 
+/* 룰렛 직행 버튼 및 액션 레이아웃 */
+.box-actions-column,
+.res-actions-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.box-sub-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-go-roulette-direct {
+  width: 100%;
+  max-width: 360px;
+  padding: 13px 20px;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #f97316, #ea580c) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: var(--r-full);
+  box-shadow: 0 4px 18px rgba(234, 88, 12, 0.45);
+  animation: pulseFlame 1.2s infinite alternate ease-in-out;
+  cursor: pointer;
+}
+
+.btn-go-roulette-direct:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(234, 88, 12, 0.65);
+}
+
+.btn-go-roulette-direct:active {
+  transform: scale(0.97);
+}
+
+
 
 
 

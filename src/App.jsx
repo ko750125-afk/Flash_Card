@@ -198,6 +198,8 @@ export default function App() {
       {view === 'matchGame' && currentDayData && (
         <MatchGameView
           dayData={currentDayData}
+          onGoRoulette={goRoulette}
+          onGoSpeedTest={goSpeedTest}
           onBack={() => goSetSelect(currentDayKey)}
         />
       )}

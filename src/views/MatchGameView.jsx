@@ -27,7 +27,7 @@ function formatTime01(ms) {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${tenths}`;
 }
 
-export default function MatchGameView({ dayData, onBack }) {
+export default function MatchGameView({ dayData, onGoRoulette, onGoSpeedTest, onBack }) {
   const allWords = useMemo(() => dayData.sets.flat(), [dayData]);
 
   // 30단어를 6단어씩 5개 세트로 분할
@@ -246,6 +246,17 @@ export default function MatchGameView({ dayData, onBack }) {
     startTimeRef.current = Date.now();
   };
 
+  // 룰렛 화면으로 바로 이동 핸들러
+  const handleGoRoulette = () => {
+    if (onGoSpeedTest) {
+      onGoSpeedTest();
+    } else if (onGoRoulette) {
+      onGoRoulette();
+    } else {
+      onBack();
+    }
+  };
+
   return (
     <div className="view-container match-game-view">
       {/* ── 헤더 ── */}
@@ -367,17 +378,26 @@ export default function MatchGameView({ dayData, onBack }) {
                 )}
               </div>
 
-              <div className="res-actions" style={{ marginTop: '16px' }}>
+              {/* 룰렛 바로가기 원클릭 액션 영역 */}
+              <div className="box-actions-column">
                 <button
-                  className="btn btn-primary"
-                  onClick={() => setShowBoxPick(false)}
+                  className="btn btn-primary btn-go-roulette-direct"
+                  onClick={handleGoRoulette}
                 >
-                  기록 확인 및 완료 →
+                  <span>{wonDoubleChance ? '🎰 2배 찬스 룰렛 돌리러 가기! →' : '🎰 룰렛 보상 받으러 가기 →'}</span>
                 </button>
-                <button className="btn btn-ghost" onClick={handleRestart}>
-                  <RotateCcw size={16} />
-                  <span>2배 찬스 다시 도전!</span>
-                </button>
+                <div className="box-sub-actions">
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => setShowBoxPick(false)}
+                  >
+                    기록 상세 확인
+                  </button>
+                  <button className="btn btn-ghost" onClick={handleRestart}>
+                    <RotateCcw size={16} />
+                    <span>2배 찬스 다시 도전</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -427,14 +447,19 @@ export default function MatchGameView({ dayData, onBack }) {
             </div>
           </div>
 
-          <div className="res-actions">
-            <button className="btn btn-primary" onClick={handleRestart}>
-              <RotateCcw size={18} />
-              <span>2배 찬스 재도전!</span>
+          <div className="res-actions-column">
+            <button className="btn btn-primary btn-go-roulette-direct" onClick={handleGoRoulette}>
+              <span>🎰 룰렛 보상 받으러 가기 →</span>
             </button>
-            <button className="btn btn-ghost" onClick={onBack}>
-              세트 목록으로
-            </button>
+            <div className="res-actions">
+              <button className="btn btn-ghost" onClick={handleRestart}>
+                <RotateCcw size={16} />
+                <span>2배 찬스 재도전!</span>
+              </button>
+              <button className="btn btn-ghost" onClick={onBack}>
+                세트 목록으로
+              </button>
+            </div>
           </div>
         </div>
       )}
