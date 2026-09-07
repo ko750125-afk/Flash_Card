@@ -322,6 +322,43 @@ button {
   background: linear-gradient(135deg, rgba(74,222,128,0.07), var(--surface));
 }
 
+.day-card.mastered-golden {
+  border: 1.5px solid rgba(240, 185, 59, 0.7);
+  background: linear-gradient(135deg, rgba(240, 185, 59, 0.22) 0%, rgba(240, 185, 59, 0.07) 50%, rgba(240, 185, 59, 0.18) 100%);
+  box-shadow: 0 4px 20px rgba(240, 185, 59, 0.22), inset 0 0 16px rgba(240, 185, 59, 0.12);
+}
+
+.day-card.mastered-golden:hover {
+  border-color: rgba(240, 185, 59, 0.95);
+  box-shadow: 0 6px 26px rgba(240, 185, 59, 0.35), inset 0 0 20px rgba(240, 185, 59, 0.2);
+}
+
+.day-card.mastered-golden .dc-num {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(240, 185, 59, 0.45);
+}
+
+.day-card.mastered-golden .dc-bar-fill {
+  background: linear-gradient(90deg, #f0b93b, #ffd700);
+  box-shadow: 0 0 8px rgba(240, 185, 59, 0.6);
+}
+
+.dc-gift-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.15rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(240, 185, 59, 0.5));
+  animation: giftBounce 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes giftBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.08); }
+}
+
 .day-card.locked {
   opacity: 0.3;
   cursor: default;
@@ -396,6 +433,12 @@ button {
 .dc-badge.ns { background: rgba(255,255,255,0.08); color: var(--text-dim); }
 .dc-badge.ip { background: rgba(240,185,59,0.18); color: var(--accent); }
 .dc-badge.done { background: rgba(74,222,128,0.18); color: var(--green); }
+.dc-badge.gold {
+  background: linear-gradient(135deg, #f0b93b, #e0a320);
+  color: #122114;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(240, 185, 59, 0.4);
+}
 .dc-badge.lock { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); }
 
 /* ============================================================

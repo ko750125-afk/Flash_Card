@@ -29,8 +29,11 @@ export default function HomeView({
   const getDayStatus = (dayKey) => {
     const data = dataMap[dayKey];
     if (!data) return 'locked';
+    const all = data.sets.flat();
+    const memCount = all.filter(w => memorized.has(w.id)).length;
+    if (memCount === all.length && all.length > 0) return 'mastered';
     if (completedDays.has(dayKey)) return 'completed';
-    const seenCount = data.sets.flat().filter(w => seenWords.has(w.id)).length;
+    const seenCount = all.filter(w => seenWords.has(w.id)).length;
     if (seenCount > 0) return 'in-progress';
     return 'not-started';
   };
@@ -46,6 +49,7 @@ export default function HomeView({
     'not-started': { cls: 'ns', txt: '시작' },
     'in-progress': { cls: 'ip', txt: '진행중' },
     completed:     { cls: 'done', txt: '완주' },
+    mastered:      { cls: 'gold', txt: '🎁 정복' },
     locked:        { cls: 'lock', txt: '준비중' },
   };
 
@@ -116,16 +120,19 @@ export default function HomeView({
             const locked = status === 'locked';
             const badge = BADGE[status];
 
+            const isMastered = status === 'mastered';
+
             return (
               <div
                 key={dayKey}
-                className={`day-card ${locked ? 'locked' : ''} ${status === 'completed' ? 'completed' : ''}`}
+                className={`day-card ${locked ? 'locked' : ''} ${status === 'completed' ? 'completed' : ''} ${isMastered ? 'mastered-golden' : ''}`}
                 onClick={() => !locked && !hasDraggedRef.current && onSelectDay(dayKey)}
                 role={locked ? undefined : 'button'}
                 tabIndex={locked ? -1 : 0}
                 onKeyDown={e => !locked && e.key === 'Enter' && onSelectDay(dayKey)}
                 aria-label={locked ? `${dayKey} 준비중` : `${dayKey} 학습하기`}
               >
+                {isMastered && <div className="dc-gift-badge" title="30단어 완전 암기!">🎁</div>}
                 <div className="dc-day">DAY</div>
                 <div className="dc-num">{dayKey.slice(3)}</div>
                 {data ? (
