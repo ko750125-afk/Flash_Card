@@ -181,6 +181,7 @@ export default function App() {
           onSelectAllWords={goAllWords}
           onSelectMatchGame={goMatchGame}
           onGoSpeedTest={goSpeedTest}
+          onGoRoulette={goRoulette}
           onBack={goHome}
         />
       )}
@@ -199,7 +200,6 @@ export default function App() {
         <MatchGameView
           dayData={currentDayData}
           onGoRoulette={goRoulette}
-          onGoSpeedTest={goSpeedTest}
           onBack={() => goSetSelect(currentDayKey)}
         />
       )}

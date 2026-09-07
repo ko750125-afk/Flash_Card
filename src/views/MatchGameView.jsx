@@ -248,10 +248,10 @@ export default function MatchGameView({ dayData, onGoRoulette, onGoSpeedTest, on
 
   // 룰렛 화면으로 바로 이동 핸들러
   const handleGoRoulette = () => {
-    if (onGoSpeedTest) {
-      onGoSpeedTest();
-    } else if (onGoRoulette) {
+    if (onGoRoulette) {
       onGoRoulette();
+    } else if (onGoSpeedTest) {
+      onGoSpeedTest();
     } else {
       onBack();
     }

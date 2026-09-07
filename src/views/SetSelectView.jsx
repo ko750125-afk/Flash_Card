@@ -8,7 +8,7 @@ const SET_META = [
 ];
 
 export default function SetSelectView({
-  dayData, memorized, seenWords, onSelectSet, onSelectAllWords, onSelectMatchGame, onGoSpeedTest, onBack,
+  dayData, memorized, seenWords, onSelectSet, onSelectAllWords, onSelectMatchGame, onGoSpeedTest, onGoRoulette, onBack,
 }) {
   const allWords   = dayData.sets.flat();
   const totalMem   = allWords.filter(w => memorized.has(w.id)).length;
@@ -29,6 +29,14 @@ export default function SetSelectView({
     return { memCount, seenCount, isDone, statusTxt, total: words.length, remain };
   };
 
+  const handleRouletteClick = () => {
+    if (onGoRoulette) {
+      onGoRoulette();
+    } else if (onGoSpeedTest) {
+      onGoSpeedTest();
+    }
+  };
+
   return (
     <div className="view-container">
       <div className="view-header">
@@ -42,7 +50,7 @@ export default function SetSelectView({
       </div>
 
       <div className="set-list">
-        {/* 1. 암기 미완료 시에만 SET 1, 2, 3 표시 */}
+        {/* 1. SET 1, 2, 3 표시 */}
         {!isAllMastered && (
           <>
             {SET_META.map((meta, i) => {
@@ -80,7 +88,7 @@ export default function SetSelectView({
           </>
         )}
 
-        {/* 2. 전체 리스트 보기 카드 (공통 첫 번째/네 번째) */}
+        {/* 2. 전체 리스트 보기 카드 */}
         <div
           className="set-card all-set"
           onClick={() => {
@@ -114,7 +122,7 @@ export default function SetSelectView({
           <ChevronRight size={16} color="rgba(240,185,59,0.5)" />
         </div>
 
-        {/* 3. 짝맞추기 게임 카드 (공통) */}
+        {/* 3. 짝맞추기 게임 카드 (보상금 2배찬스 도전!) */}
         <div
           className="set-card match-set-card"
           onClick={() => {
@@ -132,7 +140,7 @@ export default function SetSelectView({
               🔥 1분 이내 클리어 시 2배 찬스 상자 뽑기!
             </div>
             <div className="sc-name">짝맞추기 게임 (보상금 2배찬스 도전!)</div>
-            <div className="sc-range">6단어 12장 카드 (3×4 배치) · 59초대 클리어 시 선물상자(1배/2배/2배) 도전!</div>
+            <div className="sc-range">6단어 12장 카드 · 59초대 클리어 시 선물상자(1배/2배/2배) 도전!</div>
           </div>
           <div className="sc-stat">
             <div className="sc-mem" style={{ color: 'var(--accent)' }}>2배도전</div>
@@ -141,8 +149,8 @@ export default function SetSelectView({
           <ChevronRight size={16} color="#fb923c" />
         </div>
 
-        {/* 4. 암기 완료 시에만 노출되는 룰렛 보상 카드 */}
-        {isAllMastered && (() => {
+        {/* 4. 룰렛 보상 카드 (테스트 모드: 언제든 즉시 룰렛 진입 가능) */}
+        {(() => {
           let isDouble = false;
           try {
             const hasFlag = localStorage.getItem(`fc_double_reward_${dayData.key}`) === 'true';
@@ -153,21 +161,21 @@ export default function SetSelectView({
           return (
             <div
               className={`set-card roulette-set-card ${isDouble ? 'double-glow' : ''}`}
-              onClick={onGoSpeedTest}
+              onClick={handleRouletteClick}
               role="button"
               tabIndex={0}
-              onKeyDown={e => e.key === 'Enter' && onGoSpeedTest && onGoSpeedTest()}
+              onKeyDown={e => e.key === 'Enter' && handleRouletteClick()}
             >
               <div className="sc-icon">{isDouble ? '🔥' : '🎰'}</div>
               <div className="sc-body">
                 <div className="sc-status" style={{ color: isDouble ? '#ff9800' : '#ffd700', fontWeight: 800 }}>
-                  {isDouble ? '🔥 짝맞추기 2배 당첨! [2배 찬스 발동]' : '🎁 30단어 정복 특별 보상'}
+                  {isDouble ? '🔥 짝맞추기 2배 당첨! [2배 찬스 발동]' : '🎁 행운의 룰렛 보상'}
                 </div>
                 <div className="sc-name" style={{ color: '#fff' }}>
                   룰렛 보상 {isDouble && <span className="double-tag-pill">2배 찬스!</span>}
                 </div>
                 <div className="sc-range">
-                  스피드 퀴즈 통과 시 <strong>{isDouble ? '최대 40,000원 (2배!) 룰렛' : '최대 20,000원 룰렛'}</strong> 도전!
+                  {isDouble ? '보상금 2배 적용! 최대 40,000원 룰렛 돌리기!' : '터치 시 즉시 최대 20,000원 룰렛 도전!'}
                 </div>
               </div>
               <div className="sc-stat">
