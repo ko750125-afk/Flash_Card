@@ -1,18 +1,19 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, Sparkles, Award, RotateCcw } from 'lucide-react';
 import { playTickSound, playJackpotSound, playFailSound } from '../utils/sound';
 
-// 정확히 6개 슬롯: 꽝 4개, 10,000원 1개, 20,000원 1개
+// 정확히 6개 슬롯: 1천원 / 만원 / 꽝 / 2만원 / 꽝 / 2천원
 const ROULETTE_SLOTS = [
-  { id: 0, label: '꽝', sub: '다음 기회에', color: '#1a3325', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
-  { id: 1, label: '10,000원', sub: '🎉 당첨!', color: '#2e7d32', textColor: '#ffffff', isWin: true, amount: 10000 },
-  { id: 2, label: '꽝', sub: '다음 기회에', color: '#162b1f', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
-  { id: 3, label: '20,000원', sub: '💰 대박 당첨!', color: '#d97706', textColor: '#ffffff', isWin: true, amount: 20000 },
-  { id: 4, label: '꽝', sub: '다음 기회에', color: '#1a3325', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
-  { id: 5, label: '꽝', sub: '다음 기회에', color: '#162b1f', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
+  { id: 0, label: '1,000원', sub: '🎉 당첨!', color: '#164e33', textColor: '#ffffff', isWin: true, amount: 1000 },
+  { id: 1, label: '10,000원', sub: '🎉 대박 당첨!', color: '#2d6a4f', textColor: '#ffffff', isWin: true, amount: 10000 },
+  { id: 2, label: '꽝', sub: '다음 기회에', color: '#14261c', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
+  { id: 3, label: '20,000원', sub: '💰 잭팟 당첨!', color: '#d97706', textColor: '#ffffff', isWin: true, amount: 20000 },
+  { id: 4, label: '꽝', sub: '다음 기회에', color: '#14261c', textColor: 'rgba(240,235,224,0.6)', isWin: false, amount: 0 },
+  { id: 5, label: '2,000원', sub: '🎉 당첨!', color: '#1e5438', textColor: '#ffffff', isWin: true, amount: 2000 },
 ];
 
 const SECTOR_ANGLE = 360 / ROULETTE_SLOTS.length; // 60도
+const SPIN_DURATION_MS = 7500; // 7.5초 (충분히 길고 실감나는 감속)
 
 export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, onHome, onBack }) {
   // 짝맞추기 1분 미만(59.9초 이하) 달성으로 인한 2배 찬스 여부 확인
@@ -41,7 +42,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
   const [result, setResult] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
 
-  const tickIntervalRef = useRef(null);
+  const soundTimerRef = useRef(null);
 
   const handleSpin = useCallback(() => {
     if (isSpinning || isRouletteUsed) return;
@@ -56,26 +57,41 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
 
     // 60도 섹터의 중앙 각도 계산 (상단 12시 방향 포인터 기준)
     const targetCenterAngle = 360 - (targetIdx * SECTOR_ANGLE + SECTOR_ANGLE / 2);
-    const totalExtraSpins = 360 * 6; // 6바퀴 회전
+    const totalExtraSpins = 360 * 10; // 10바퀴 시원하고 긴 회전
     const currentBase = Math.floor(rotationDeg / 360) * 360;
     const finalAngle = currentBase + totalExtraSpins + targetCenterAngle;
 
     setRotationDeg(finalAngle);
 
-    // 회전 중 틱틱 사운드
-    let tickCount = 0;
-    const maxTicks = 28;
-    tickIntervalRef.current = setInterval(() => {
-      playTickSound();
-      tickCount++;
-      if (tickCount >= maxTicks) {
-        clearInterval(tickIntervalRef.current);
-      }
-    }, 150);
+    // 가속 -> 고속 -> 서서히 감속(Deceleration)하는 실감나는 틱 사운드 시뮬레이션
+    const spinStartTime = Date.now();
+    const scheduleNextTick = () => {
+      const elapsed = Date.now() - spinStartTime;
+      if (elapsed >= SPIN_DURATION_MS - 200) return;
 
-    // 4.5초 회전 애니메이션 종료 후 결과 판정
+      playTickSound();
+
+      // 경과 시간(0 ~ 7.5초)에 따라 틱 간격을 80ms에서 650ms까지 지수/점진적으로 증가
+      const progress = elapsed / SPIN_DURATION_MS; // 0.0 ~ 1.0
+      let nextDelay;
+      if (progress < 0.4) {
+        nextDelay = 75 + progress * 80; // 75ms ~ 107ms (초고속 틱틱틱)
+      } else if (progress < 0.7) {
+        nextDelay = 110 + Math.pow(progress - 0.4, 1.8) * 600; // 110ms ~ 230ms (점진 감속)
+      } else if (progress < 0.9) {
+        nextDelay = 240 + Math.pow(progress - 0.7, 1.5) * 1200; // 240ms ~ 450ms (느려짐)
+      } else {
+        nextDelay = 460 + Math.pow(progress - 0.9, 1.2) * 2000; // 460ms ~ 650ms (마지막 틱... 틱.....)
+      }
+
+      soundTimerRef.current = setTimeout(scheduleNextTick, Math.min(nextDelay, 680));
+    };
+
+    scheduleNextTick();
+
+    // 7.5초 회전 애니메이션 종료 후 결과 판정
     setTimeout(() => {
-      clearInterval(tickIntervalRef.current);
+      if (soundTimerRef.current) clearTimeout(soundTimerRef.current);
       setIsSpinning(false);
       setResult(selectedSlot);
       setShowResultModal(true);
@@ -97,12 +113,12 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
       } else {
         playFailSound();
       }
-    }, 4500);
+    }, SPIN_DURATION_MS);
   }, [isSpinning, isRouletteUsed, rotationDeg, onWinReward, isDoubleChance, dayData.key]);
 
   useEffect(() => {
     return () => {
-      if (tickIntervalRef.current) clearInterval(tickIntervalRef.current);
+      if (soundTimerRef.current) clearTimeout(soundTimerRef.current);
     };
   }, []);
 
@@ -135,7 +151,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         ) : (
           <div className="roulette-banner">
             <Sparkles size={20} className="sparkle-icon" />
-            <span>총 6개 슬롯 (1/6 동일 확률) · 단 1회 한정 기회!</span>
+            <span>총 6개 슬롯 · 1천원/만원/2만원/2천원/꽝 (1회 한정 기회!)</span>
           </div>
         )}
 
@@ -150,7 +166,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
             style={{
               transform: `rotate(${rotationDeg}deg)`,
               transition: isSpinning
-                ? 'transform 4.5s cubic-bezier(0.12, 0.85, 0.15, 1)'
+                ? 'transform 7.5s cubic-bezier(0.12, 0.98, 0.22, 1)'
                 : 'none',
             }}
           >
