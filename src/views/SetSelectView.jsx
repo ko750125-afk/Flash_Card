@@ -42,63 +42,45 @@ export default function SetSelectView({
       </div>
 
       <div className="set-list">
-        {/* 🎁 30단어 마스터 완료 시 퀴즈 & 룰렛 보상 도전 특별 배너 */}
-        {isAllMastered && (
-          <div
-            className="speed-test-banner-card"
-            onClick={onGoSpeedTest}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => e.key === 'Enter' && onGoSpeedTest && onGoSpeedTest()}
-          >
-            <div className="st-banner-badge">🎁 특별 보상 챌린지</div>
-            <div className="st-banner-content">
-              <div className="st-banner-icon">🎰</div>
-              <div className="st-banner-text">
-                <div className="st-banner-title">⚡ 스피드 퀴즈 & 룰렛 보상!</div>
-                <div className="st-banner-desc">
-                  타이머 내 4지선다 통과 시 <strong>최대 20,000원 룰렛</strong> 기회 획득!
+        {/* 1. 암기 미완료 시에만 SET 1, 2, 3 표시 */}
+        {!isAllMastered && (
+          <>
+            {SET_META.map((meta, i) => {
+              const info = getSetInfo(i);
+              const handleSelect = () => {
+                const words = dayData.sets[i];
+                const unmemorized = words.filter(w => !memorized.has(w.id));
+                const firstWord = unmemorized.length > 0 ? unmemorized[0] : words[0];
+                if (firstWord) speak(firstWord.en);
+                onSelectSet(i);
+              };
+              return (
+                <div
+                  key={i}
+                  className={`set-card ${info.isDone ? 'completed-card' : ''}`}
+                  onClick={handleSelect}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => e.key === 'Enter' && handleSelect()}
+                >
+                  <div className="sc-icon">{info.isDone ? '👑' : meta.icon}</div>
+                  <div className="sc-body">
+                    <div className="sc-status">{info.statusTxt}</div>
+                    <div className="sc-name">{meta.label}</div>
+                    <div className="sc-range">{meta.range}</div>
+                  </div>
+                  <div className="sc-stat">
+                    <div className="sc-mem">{info.memCount}</div>
+                    <div className="sc-tot">/ {info.total} 암기</div>
+                  </div>
+                  <ChevronRight size={16} color="rgba(240,235,224,0.25)" />
                 </div>
-              </div>
-              <ChevronRight size={20} color="#f0b93b" />
-            </div>
-          </div>
+              );
+            })}
+          </>
         )}
-        {/* SET 1~3 */}
-        {SET_META.map((meta, i) => {
-          const info = getSetInfo(i);
-          const handleSelect = () => {
-            const words = dayData.sets[i];
-            const unmemorized = words.filter(w => !memorized.has(w.id));
-            const firstWord = unmemorized.length > 0 ? unmemorized[0] : words[0];
-            if (firstWord) speak(firstWord.en);
-            onSelectSet(i);
-          };
-          return (
-            <div
-              key={i}
-              className={`set-card ${info.isDone ? 'completed-card' : ''}`}
-              onClick={handleSelect}
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => e.key === 'Enter' && handleSelect()}
-            >
-              <div className="sc-icon">{info.isDone ? '👑' : meta.icon}</div>
-              <div className="sc-body">
-                <div className="sc-status">{info.statusTxt}</div>
-                <div className="sc-name">{meta.label}</div>
-                <div className="sc-range">{meta.range}</div>
-              </div>
-              <div className="sc-stat">
-                <div className="sc-mem">{info.memCount}</div>
-                <div className="sc-tot">/ {info.total} 암기</div>
-              </div>
-              <ChevronRight size={16} color="rgba(240,235,224,0.25)" />
-            </div>
-          );
-        })}
 
-        {/* 전체 리스트 보기 */}
+        {/* 2. 전체 리스트 보기 카드 (공통 첫 번째/네 번째) */}
         <div
           className="set-card all-set"
           onClick={() => {
@@ -132,7 +114,7 @@ export default function SetSelectView({
           <ChevronRight size={16} color="rgba(240,185,59,0.5)" />
         </div>
 
-        {/* 짝맞추기 게임 */}
+        {/* 3. 짝맞추기 게임 카드 (공통) */}
         <div
           className="set-card match-set-card"
           onClick={() => {
@@ -156,6 +138,35 @@ export default function SetSelectView({
           </div>
           <ChevronRight size={16} color="#fb923c" />
         </div>
+
+        {/* 4. 암기 완료 시에만 노출되는 룰렛 보상 카드 */}
+        {isAllMastered && (
+          <div
+            className="set-card roulette-set-card"
+            onClick={onGoSpeedTest}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => e.key === 'Enter' && onGoSpeedTest && onGoSpeedTest()}
+          >
+            <div className="sc-icon">🎰</div>
+            <div className="sc-body">
+              <div className="sc-status" style={{ color: '#ffd700', fontWeight: 800 }}>
+                🎁 30단어 정복 특별 보상
+              </div>
+              <div className="sc-name" style={{ color: '#fff' }}>
+                룰렛 보상
+              </div>
+              <div className="sc-range">
+                스피드 퀴즈 통과 시 <strong>최대 20,000원 룰렛</strong> 도전!
+              </div>
+            </div>
+            <div className="sc-stat">
+              <div className="sc-mem" style={{ color: '#ffd700' }}>최대 2만원</div>
+              <div className="sc-tot">룰렛 돌리기</div>
+            </div>
+            <ChevronRight size={18} color="#f0b93b" />
+          </div>
+        )}
       </div>
     </div>
   );
