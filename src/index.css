@@ -2768,6 +2768,31 @@ button {
   vertical-align: middle;
 }
 
+/* 7. 룰렛 1회 완료 잠금 카드 */
+.roulette-set-card.done-locked {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  opacity: 0.6;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+.roulette-set-card.done-locked:hover,
+.roulette-set-card.done-locked:active {
+  transform: none !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.btn-spin-wheel.disabled {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-dim) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+
 
 
 

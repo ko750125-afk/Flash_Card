@@ -27,6 +27,15 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
     }
   }, [dayData.key]);
 
+  // 룰렛 1회 완료 여부 확인
+  const [isRouletteUsed, setIsRouletteUsed] = useState(() => {
+    try {
+      return localStorage.getItem(`fc_roulette_done_${dayData.key}`) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
   const [result, setResult] = useState(null);
@@ -35,7 +44,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
   const tickIntervalRef = useRef(null);
 
   const handleSpin = useCallback(() => {
-    if (isSpinning) return;
+    if (isSpinning || isRouletteUsed) return;
 
     setIsSpinning(true);
     setShowResultModal(false);
@@ -71,6 +80,14 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
       setResult(selectedSlot);
       setShowResultModal(true);
 
+      // 룰렛 1회 사용 완료 영구 기록
+      try {
+        localStorage.setItem(`fc_roulette_done_${dayData.key}`, 'true');
+        setIsRouletteUsed(true);
+      } catch (e) {
+        console.warn('Failed to save roulette done flag:', e);
+      }
+
       if (selectedSlot.isWin) {
         playJackpotSound();
         if (onWinReward && selectedSlot.amount > 0) {
@@ -81,7 +98,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         playFailSound();
       }
     }, 4500);
-  }, [isSpinning, rotationDeg, onWinReward, isDoubleChance]);
+  }, [isSpinning, isRouletteUsed, rotationDeg, onWinReward, isDoubleChance, dayData.key]);
 
   useEffect(() => {
     return () => {
@@ -98,14 +115,18 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         </button>
         <div className="roulette-hdr-info">
           <div className="roulette-title">🎁 {dayData.label} 행운의 룰렛</div>
-          <div className="roulette-sub">30단어 마스터 완료 특별 보상</div>
+          <div className="roulette-sub">30단어 마스터 완료 특별 보상 (DAY당 1회 한정)</div>
         </div>
       </div>
 
       {/* ── 룰렛 본문 ── */}
       <div className="roulette-body">
         {/* 상단 안내 배너 (2배 찬스 발동 시 불꽃 강조) */}
-        {isDoubleChance ? (
+        {isRouletteUsed && !isSpinning ? (
+          <div className="roulette-banner" style={{ borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.06)' }}>
+            <span>✅ {dayData.label} 보상 룰렛 참여가 완료되었습니다 (기회 종료)</span>
+          </div>
+        ) : isDoubleChance ? (
           <div className="roulette-banner double-active">
             <span className="flame-icon">🔥</span>
             <span><strong>[보상금 2배 찬스 발동]</strong> 짝맞추기 59초대 클리어 특전! (1만→2만 / 2만→4만)</span>
@@ -114,12 +135,12 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         ) : (
           <div className="roulette-banner">
             <Sparkles size={20} className="sparkle-icon" />
-            <span>총 6개 슬롯 (1/6 동일 확률) · 10,000원 / 20,000원 / 꽝</span>
+            <span>총 6개 슬롯 (1/6 동일 확률) · 단 1회 한정 기회!</span>
           </div>
         )}
 
         {/* 룰렛 휠 컨테이너 */}
-        <div className={`wheel-wrapper ${isDoubleChance ? 'double-glow' : ''}`}>
+        <div className={`wheel-wrapper ${isDoubleChance && !isRouletteUsed ? 'double-glow' : ''}`}>
           {/* 상단 지시 화살표 포인터 */}
           <div className="wheel-pointer" />
 
@@ -202,15 +223,17 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         {/* 룰렛 돌리기 액션 버튼 */}
         <div className="roulette-action-area">
           <button
-            className={`btn-spin-wheel ${isSpinning ? 'spinning' : ''} ${isDoubleChance ? 'double-btn' : ''}`}
+            className={`btn-spin-wheel ${isSpinning ? 'spinning' : ''} ${isDoubleChance && !isRouletteUsed ? 'double-btn' : ''} ${isRouletteUsed ? 'disabled' : ''}`}
             onClick={handleSpin}
-            disabled={isSpinning}
+            disabled={isSpinning || isRouletteUsed}
           >
             {isSpinning
               ? '두근두근 회전 중...'
-              : isDoubleChance
-                ? '🔥 2배 찬스 룰렛 START!'
-                : '🎰 룰렛 START!'}
+              : isRouletteUsed
+                ? '✅ 룰렛 보상 참여 완료 (종료)'
+                : isDoubleChance
+                  ? '🔥 2배 찬스 룰렛 START!'
+                  : '🎰 룰렛 START! (1회 한정)'}
           </button>
         </div>
       </div>
@@ -234,7 +257,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
             </div>
 
             <div className={`result-prize-box ${result.isWin ? 'win' : ''}`}>
-              <div className="prize-label">룰렛 결과</div>
+              <div className="prize-label">룰렛 결과 (1회 완료)</div>
               <div className="prize-val">
                 {result.isWin && isDoubleChance
                   ? `${(result.amount * 2).toLocaleString()}원 (2배!)`
@@ -261,9 +284,9 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
               </button>
               <button
                 className="btn btn-ghost"
-                onClick={() => setShowResultModal(false)}
+                onClick={onBack}
               >
-                룰렛 다시 돌려보기
+                세트 목록으로
               </button>
             </div>
           </div>
