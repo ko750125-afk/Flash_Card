@@ -128,13 +128,15 @@ export default function SetSelectView({
         >
           <div className="sc-icon">🧩</div>
           <div className="sc-body">
-            <div className="sc-status">단어와 뜻 매칭 게임</div>
-            <div className="sc-name">짝맞추기 게임</div>
-            <div className="sc-range">6단어 12장 카드 (3×4 배치) · 총 5세트 클리어</div>
+            <div className="sc-status" style={{ color: '#fb923c', fontWeight: 800 }}>
+              🔥 1분 이내 클리어 시 2배 찬스 상자 뽑기!
+            </div>
+            <div className="sc-name">짝맞추기 게임 (보상금 2배찬스 도전!)</div>
+            <div className="sc-range">6단어 12장 카드 (3×4 배치) · 59초대 클리어 시 선물상자(1배/2배/2배) 도전!</div>
           </div>
           <div className="sc-stat">
-            <div className="sc-mem" style={{ color: 'var(--accent)' }}>5세트</div>
-            <div className="sc-tot">30단어</div>
+            <div className="sc-mem" style={{ color: 'var(--accent)' }}>2배도전</div>
+            <div className="sc-tot">무제한</div>
           </div>
           <ChevronRight size={16} color="#fb923c" />
         </div>

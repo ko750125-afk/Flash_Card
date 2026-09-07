@@ -62,6 +62,13 @@ export default function MatchGameView({ dayData, onBack }) {
   const [elapsedMs, setElapsedMs] = useState(0);
   const [isNewRecord, setIsNewRecord] = useState(false);
 
+  // 3개 선물상자 (1배 1개, 2배 2개) 뽑기 상태
+  const [showBoxPick, setShowBoxPick] = useState(false);
+  const [giftBoxes, setGiftBoxes] = useState([]);
+  const [selectedBoxIdx, setSelectedBoxIdx] = useState(null);
+  const [isBoxesRevealed, setIsBoxesRevealed] = useState(false);
+  const [wonDoubleChance, setWonDoubleChance] = useState(false);
+
   const startTimeRef = useRef(null);
   const timerRafRef = useRef(null);
 
@@ -158,15 +165,6 @@ export default function MatchGameView({ dayData, onBack }) {
             setIsGameDone(true);
             playJackpotSound();
 
-            // 1분 미만(59.9초 이하) 달성 시 룰렛 보상금 2배 찬스 활성화
-            if (finalTime < 60000) {
-              try {
-                localStorage.setItem(`fc_double_reward_${dayData.key}`, 'true');
-              } catch (e) {
-                console.warn('Failed to save double reward chance:', e);
-              }
-            }
-
             // 신기록 판별 및 갱신 저장
             setBestTimeMs(prevBest => {
               const isRecord = prevBest === null || finalTime < prevBest;
@@ -183,6 +181,22 @@ export default function MatchGameView({ dayData, onBack }) {
                 return prevBest;
               }
             });
+
+            // 1분 미만(59.9초 이하) 완주 시 3개 선물상자 뽑기 모드 진입
+            if (finalTime < 60000) {
+              const boxes = shuffle([
+                { id: 'b1', mult: 1, label: '1배 (기본)', emoji: '🙂', desc: '아쉽지만 기본 보상' },
+                { id: 'b2', mult: 2, label: '🔥 2배 찬스!', emoji: '🎉', desc: '룰렛 보상금 2배 획득!' },
+                { id: 'b3', mult: 2, label: '🔥 2배 찬스!', emoji: '🎉', desc: '룰렛 보상금 2배 획득!' },
+              ]);
+              setGiftBoxes(boxes);
+              setSelectedBoxIdx(null);
+              setIsBoxesRevealed(false);
+              setWonDoubleChance(false);
+              setShowBoxPick(true);
+            } else {
+              setShowBoxPick(false);
+            }
           }
         }, 650);
       }
@@ -196,13 +210,39 @@ export default function MatchGameView({ dayData, onBack }) {
         setIsProcessing(false);
       }, 700);
     }
-  }, [isProcessing, matchedIds, firstSelected, cards.length, currentSetIdx, storageKey]);
+  }, [isProcessing, matchedIds, firstSelected, cards.length, currentSetIdx, storageKey, dayData.key]);
+
+  // 선물상자 1개 선택 처리
+  const handleSelectBox = (idx) => {
+    if (isBoxesRevealed) return;
+
+    setSelectedBoxIdx(idx);
+    setIsBoxesRevealed(true);
+
+    const picked = giftBoxes[idx];
+    if (picked.mult === 2) {
+      setWonDoubleChance(true);
+      playJackpotSound();
+      try {
+        localStorage.setItem(`fc_double_reward_${dayData.key}`, 'true');
+      } catch (e) {
+        console.warn('Failed to save double reward chance:', e);
+      }
+    } else {
+      setWonDoubleChance(false);
+      playCorrectSound();
+    }
+  };
 
   const handleRestart = () => {
     setCurrentSetIdx(0);
     setElapsedMs(0);
     setIsGameDone(false);
     setIsNewRecord(false);
+    setShowBoxPick(false);
+    setSelectedBoxIdx(null);
+    setIsBoxesRevealed(false);
+    setWonDoubleChance(false);
     startTimeRef.current = Date.now();
   };
 
@@ -214,7 +254,7 @@ export default function MatchGameView({ dayData, onBack }) {
           <ChevronLeft size={20} />
         </button>
         <div className="match-hdr-center">
-          <div className="match-title">🧩 {dayData.label} 짝맞추기</div>
+          <div className="match-title">🧩 {dayData.label} 짝맞추기 (2배 찬스 도전!)</div>
           <div className="match-sub">{dayData.topic}</div>
         </div>
         <div className="match-stats-header">
@@ -270,6 +310,78 @@ export default function MatchGameView({ dayData, onBack }) {
             })}
           </div>
         </div>
+      ) : showBoxPick ? (
+        /* ── 1분 미만 완주 특전: 3개 선물상자 (1배, 2배, 2배) 선택 미니게임 ── */
+        <div className="match-result-box box-pick-box">
+          <div className="box-pick-header">
+            <div className="box-pick-badge">
+              🔥 59초대 클리어 성공! (기록: {formatTime01(elapsedMs)})
+            </div>
+            <h2 className="box-pick-title">선물상자를 하나 골라주세요!</h2>
+            <p className="box-pick-desc">
+              3개의 상자 중 <strong>2개는 2배 찬스</strong>, <strong>1개는 1배</strong>입니다!
+            </p>
+          </div>
+
+          <div className="gift-box-pick-grid">
+            {giftBoxes.map((box, idx) => {
+              const isSelected = selectedBoxIdx === idx;
+              return (
+                <div
+                  key={box.id}
+                  className={`gift-box-card ${isSelected ? 'selected' : ''} ${isBoxesRevealed ? 'revealed' : ''} ${isBoxesRevealed && box.mult === 2 ? 'is-double' : ''}`}
+                  onClick={() => !isBoxesRevealed && handleSelectBox(idx)}
+                  role="button"
+                  tabIndex={isBoxesRevealed ? -1 : 0}
+                >
+                  {!isBoxesRevealed ? (
+                    <div className="box-closed-view">
+                      <div className="box-emoji-anim">🎁</div>
+                      <div className="box-num-tag">{idx + 1}번 상자</div>
+                      <div className="box-tap-hint">터치하여 열기</div>
+                    </div>
+                  ) : (
+                    <div className="box-opened-view">
+                      <div className="box-res-emoji">{box.emoji}</div>
+                      <div className="box-res-mult">{box.mult}배</div>
+                      <div className="box-res-lbl">{box.label}</div>
+                      {isSelected && <div className="box-my-pick">내 선택</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {isBoxesRevealed && (
+            <div className="box-reveal-result-area">
+              <div className={`box-result-banner ${wonDoubleChance ? 'win-double' : 'win-single'}`}>
+                {wonDoubleChance ? (
+                  <>
+                    <Sparkles size={18} />
+                    <span>🎉 축하합니다! <strong>보상금 2배 찬스</strong>에 당첨되었습니다!</span>
+                    <Sparkles size={18} />
+                  </>
+                ) : (
+                  <span>🙂 아쉽게도 1배가 나왔습니다. 다음 판에 다시 2배에 도전해 보세요!</span>
+                )}
+              </div>
+
+              <div className="res-actions" style={{ marginTop: '16px' }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowBoxPick(false)}
+                >
+                  기록 확인 및 완료 →
+                </button>
+                <button className="btn btn-ghost" onClick={handleRestart}>
+                  <RotateCcw size={16} />
+                  <span>2배 찬스 다시 도전!</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
         /* ── 전체 5세트 완료 및 기록 갱신 결과 화면 ── */
         <div className="match-result-box">
@@ -277,13 +389,17 @@ export default function MatchGameView({ dayData, onBack }) {
             {isNewRecord ? '👑 🏆 👑' : '🎉 👏 🎉'}
           </div>
 
-          {elapsedMs < 60000 && (
+          {wonDoubleChance ? (
             <div className="double-chance-earned-banner">
               <span className="flame-icon">🔥</span>
-              <span><strong>59초대 클리어!</strong> 룰렛 보상금 2배 찬스 발동!</span>
+              <span><strong>선물상자 2배 당첨!</strong> 룰렛 보상금 2배 찬스 발동!</span>
               <span className="flame-icon">🔥</span>
             </div>
-          )}
+          ) : elapsedMs < 60000 ? (
+            <div className="double-chance-earned-banner" style={{ background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.2)' }}>
+              <span>59초대 클리어 완주 (상자 선택: 1배)</span>
+            </div>
+          ) : null}
 
           {isNewRecord && (
             <div className="new-record-banner">
@@ -297,7 +413,7 @@ export default function MatchGameView({ dayData, onBack }) {
           <p className="match-res-desc">
             {isNewRecord
               ? '축하합니다! 새로운 최고 기록을 세우셨습니다!'
-              : '수고하셨습니다! 계속해서 신기록에 도전해 보세요!'}
+              : '수고하셨습니다! 계속해서 신기록 및 2배 찬스에 도전해 보세요!'}
           </p>
 
           <div className="match-stat-row">
@@ -314,7 +430,7 @@ export default function MatchGameView({ dayData, onBack }) {
           <div className="res-actions">
             <button className="btn btn-primary" onClick={handleRestart}>
               <RotateCcw size={18} />
-              <span>기록 단축 재도전!</span>
+              <span>2배 찬스 재도전!</span>
             </button>
             <button className="btn btn-ghost" onClick={onBack}>
               세트 목록으로

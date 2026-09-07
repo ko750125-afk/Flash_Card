@@ -2792,6 +2792,199 @@ button {
   animation: none !important;
 }
 
+/* ============================================================
+   8. 3개 선물상자 (1배 / 2배 / 2배) 선택 미니게임 UI
+   ============================================================ */
+.box-pick-box {
+  animation: fadeIn 0.3s ease;
+}
+
+.box-pick-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.box-pick-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(239, 68, 68, 0.25));
+  border: 1px solid #f97316;
+  color: #ffedd5;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--r-full);
+  margin-bottom: 10px;
+}
+
+.box-pick-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.box-pick-desc {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+}
+
+.box-pick-desc strong {
+  color: #ffd700;
+}
+
+.gift-box-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto 20px;
+}
+
+.gift-box-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  position: relative;
+  min-height: 140px;
+}
+
+.gift-box-card:not(.revealed):hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.12);
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+}
+
+.gift-box-card:not(.revealed):active {
+  transform: scale(0.96);
+}
+
+.box-closed-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.box-emoji-anim {
+  font-size: 2.8rem;
+  animation: bounceBox 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes bounceBox {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+.box-num-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.box-tap-hint {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* 상자 오픈 후 상태 */
+.gift-box-card.revealed {
+  cursor: default;
+  transform: none !important;
+}
+
+.gift-box-card.revealed.is-double {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.3)) !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.4) !important;
+}
+
+.gift-box-card.revealed.selected {
+  outline: 3px solid #ffd700;
+  outline-offset: 2px;
+}
+
+.box-opened-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.box-res-emoji {
+  font-size: 2.2rem;
+}
+
+.box-res-mult {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.gift-box-card.is-double .box-res-mult {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.box-res-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.box-my-pick {
+  margin-top: 4px;
+  background: #ffd700;
+  color: #122215;
+  font-size: 0.6rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: var(--r-full);
+}
+
+/* 결과 배너 */
+.box-reveal-result-area {
+  width: 100%;
+  animation: fadeIn 0.4s ease;
+}
+
+.box-result-banner {
+  padding: 10px 16px;
+  border-radius: var(--r);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.box-result-banner.win-double {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(249, 115, 22, 0.35));
+  border: 1.5px solid #f97316;
+  color: #ffedd5;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.4);
+}
+
+.box-result-banner.win-single {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-dim);
+}
+
+
 
 
 
