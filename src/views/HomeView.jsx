@@ -130,7 +130,7 @@ export default function HomeView({
                 <div className="dc-num">{dayKey.slice(3)}</div>
                 {data ? (
                   <>
-                    <div className="dc-topic">{data.topic}</div>
+                    <div className="dc-topic" title={data.topic}>{data.topic}</div>
                     <div className="dc-bar">
                       <div className="dc-bar-fill" style={{ width: `${(mem / total) * 100}%` }} />
                     </div>

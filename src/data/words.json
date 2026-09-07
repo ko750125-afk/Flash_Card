@@ -2,7 +2,7 @@
   {
     "key": "DAY01",
     "label": "DAY 01",
-    "topic": "DAY 01",
+    "topic": "고등핵심어휘(1/10)",
     "sets": [
       [
         {
@@ -165,7 +165,7 @@
   {
     "key": "DAY02",
     "label": "DAY 02",
-    "topic": "DAY 02",
+    "topic": "고등핵심어휘(2/10)",
     "sets": [
       [
         {
@@ -328,7 +328,7 @@
   {
     "key": "DAY03",
     "label": "DAY 03",
-    "topic": "DAY 03",
+    "topic": "고등핵심어휘(3/10)",
     "sets": [
       [
         {
@@ -491,7 +491,7 @@
   {
     "key": "DAY04",
     "label": "DAY 04",
-    "topic": "DAY 04",
+    "topic": "고등핵심어휘(4/10)",
     "sets": [
       [
         {
@@ -654,7 +654,7 @@
   {
     "key": "DAY05",
     "label": "DAY 05",
-    "topic": "DAY 05",
+    "topic": "고등핵심어휘(5/10)",
     "sets": [
       [
         {
@@ -817,7 +817,7 @@
   {
     "key": "DAY06",
     "label": "DAY 06",
-    "topic": "DAY 06",
+    "topic": "고등핵심어휘(6/10)",
     "sets": [
       [
         {
@@ -980,7 +980,7 @@
   {
     "key": "DAY07",
     "label": "DAY 07",
-    "topic": "DAY 07",
+    "topic": "고등핵심어휘(7/10)",
     "sets": [
       [
         {
@@ -1143,7 +1143,7 @@
   {
     "key": "DAY08",
     "label": "DAY 08",
-    "topic": "DAY 08",
+    "topic": "고등핵심어휘(8/10)",
     "sets": [
       [
         {
@@ -1306,7 +1306,7 @@
   {
     "key": "DAY09",
     "label": "DAY 09",
-    "topic": "DAY 09",
+    "topic": "고등핵심어휘(9/10)",
     "sets": [
       [
         {
@@ -1469,7 +1469,7 @@
   {
     "key": "DAY10",
     "label": "DAY 10",
-    "topic": "DAY 10",
+    "topic": "고등핵심어휘(10/10)",
     "sets": [
       [
         {
@@ -1632,7 +1632,7 @@
   {
     "key": "DAY11",
     "label": "DAY 11",
-    "topic": "DAY 11",
+    "topic": "접두사(1/3)",
     "sets": [
       [
         {
@@ -1795,7 +1795,7 @@
   {
     "key": "DAY12",
     "label": "DAY 12",
-    "topic": "DAY 12",
+    "topic": "접두사(2/3)",
     "sets": [
       [
         {
@@ -1958,7 +1958,7 @@
   {
     "key": "DAY13",
     "label": "DAY 13",
-    "topic": "DAY 13",
+    "topic": "접두사(3/3)",
     "sets": [
       [
         {
@@ -2121,7 +2121,7 @@
   {
     "key": "DAY14",
     "label": "DAY 14",
-    "topic": "DAY 14",
+    "topic": "접미사",
     "sets": [
       [
         {
@@ -2284,7 +2284,7 @@
   {
     "key": "DAY15",
     "label": "DAY 15",
-    "topic": "DAY 15",
+    "topic": "어근(1/7)",
     "sets": [
       [
         {
@@ -2447,7 +2447,7 @@
   {
     "key": "DAY16",
     "label": "DAY 16",
-    "topic": "DAY 16",
+    "topic": "어근(2/7)",
     "sets": [
       [
         {
@@ -2610,7 +2610,7 @@
   {
     "key": "DAY17",
     "label": "DAY 17",
-    "topic": "DAY 17",
+    "topic": "어근(3/7)",
     "sets": [
       [
         {
@@ -2773,7 +2773,7 @@
   {
     "key": "DAY18",
     "label": "DAY 18",
-    "topic": "DAY 18",
+    "topic": "어근(4/7)",
     "sets": [
       [
         {
@@ -2936,7 +2936,7 @@
   {
     "key": "DAY19",
     "label": "DAY 19",
-    "topic": "DAY 19",
+    "topic": "어근(5/7)",
     "sets": [
       [
         {
@@ -3099,7 +3099,7 @@
   {
     "key": "DAY20",
     "label": "DAY 20",
-    "topic": "DAY 20",
+    "topic": "어근(6/7)",
     "sets": [
       [
         {
@@ -3262,7 +3262,7 @@
   {
     "key": "DAY21",
     "label": "DAY 21",
-    "topic": "DAY 21",
+    "topic": "어근(7/7)",
     "sets": [
       [
         {
@@ -3425,7 +3425,7 @@
   {
     "key": "DAY22",
     "label": "DAY 22",
-    "topic": "DAY 22",
+    "topic": "성격·감정·태도",
     "sets": [
       [
         {
@@ -3588,7 +3588,7 @@
   {
     "key": "DAY23",
     "label": "DAY 23",
-    "topic": "DAY 23",
+    "topic": "교육·학문·진로·직업",
     "sets": [
       [
         {
@@ -3751,7 +3751,7 @@
   {
     "key": "DAY24",
     "label": "DAY 24",
-    "topic": "DAY 24",
+    "topic": "교통·정보·통신·미디어",
     "sets": [
       [
         {
@@ -3914,7 +3914,7 @@
   {
     "key": "DAY25",
     "label": "DAY 25",
-    "topic": "DAY 25",
+    "topic": "농경·지리·역사·전쟁",
     "sets": [
       [
         {
@@ -4077,7 +4077,7 @@
   {
     "key": "DAY26",
     "label": "DAY 26",
-    "topic": "DAY 26",
+    "topic": "동작",
     "sets": [
       [
         {
@@ -4240,7 +4240,7 @@
   {
     "key": "DAY27",
     "label": "DAY 27",
-    "topic": "DAY 27",
+    "topic": "사회·문화·종교",
     "sets": [
       [
         {
@@ -4403,7 +4403,7 @@
   {
     "key": "DAY28",
     "label": "DAY 28",
-    "topic": "DAY 28",
+    "topic": "예술·문학·건축",
     "sets": [
       [
         {
@@ -4566,7 +4566,7 @@
   {
     "key": "DAY29",
     "label": "DAY 29",
-    "topic": "DAY 29",
+    "topic": "의학·질병·신체·영양",
     "sets": [
       [
         {
@@ -4729,7 +4729,7 @@
   {
     "key": "DAY30",
     "label": "DAY 30",
-    "topic": "DAY 30",
+    "topic": "과학·기술·자원",
     "sets": [
       [
         {
@@ -4892,7 +4892,7 @@
   {
     "key": "DAY31",
     "label": "DAY 31",
-    "topic": "DAY 31",
+    "topic": "자연·동식물·기후·환경",
     "sets": [
       [
         {
@@ -5055,7 +5055,7 @@
   {
     "key": "DAY32",
     "label": "DAY 32",
-    "topic": "DAY 32",
+    "topic": "정치·경제·법",
     "sets": [
       [
         {
@@ -5218,7 +5218,7 @@
   {
     "key": "DAY33",
     "label": "DAY 33",
-    "topic": "DAY 33",
+    "topic": "반의어",
     "sets": [
       [
         {
@@ -5381,7 +5381,7 @@
   {
     "key": "DAY34",
     "label": "DAY 34",
-    "topic": "DAY 34",
+    "topic": "혼동어(1/4)",
     "sets": [
       [
         {
@@ -5544,7 +5544,7 @@
   {
     "key": "DAY35",
     "label": "DAY 35",
-    "topic": "DAY 35",
+    "topic": "혼동어(2/4)",
     "sets": [
       [
         {
@@ -5707,7 +5707,7 @@
   {
     "key": "DAY36",
     "label": "DAY 36",
-    "topic": "DAY 36",
+    "topic": "혼동어(3/4)",
     "sets": [
       [
         {
@@ -5870,7 +5870,7 @@
   {
     "key": "DAY37",
     "label": "DAY 37",
-    "topic": "DAY 37",
+    "topic": "혼동어(4/4)",
     "sets": [
       [
         {
@@ -6033,7 +6033,7 @@
   {
     "key": "DAY38",
     "label": "DAY 38",
-    "topic": "DAY 38",
+    "topic": "다의어(1/3)",
     "sets": [
       [
         {
@@ -6196,7 +6196,7 @@
   {
     "key": "DAY39",
     "label": "DAY 39",
-    "topic": "DAY 39",
+    "topic": "다의어(2/3)",
     "sets": [
       [
         {
@@ -6359,7 +6359,7 @@
   {
     "key": "DAY40",
     "label": "DAY 40",
-    "topic": "DAY 40",
+    "topic": "다의어(3/3)",
     "sets": [
       [
         {
