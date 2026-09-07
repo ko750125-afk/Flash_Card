@@ -158,6 +158,15 @@ export default function MatchGameView({ dayData, onBack }) {
             setIsGameDone(true);
             playJackpotSound();
 
+            // 1분 미만(59.9초 이하) 달성 시 룰렛 보상금 2배 찬스 활성화
+            if (finalTime < 60000) {
+              try {
+                localStorage.setItem(`fc_double_reward_${dayData.key}`, 'true');
+              } catch (e) {
+                console.warn('Failed to save double reward chance:', e);
+              }
+            }
+
             // 신기록 판별 및 갱신 저장
             setBestTimeMs(prevBest => {
               const isRecord = prevBest === null || finalTime < prevBest;
@@ -267,6 +276,14 @@ export default function MatchGameView({ dayData, onBack }) {
           <div className="match-res-emoji">
             {isNewRecord ? '👑 🏆 👑' : '🎉 👏 🎉'}
           </div>
+
+          {elapsedMs < 60000 && (
+            <div className="double-chance-earned-banner">
+              <span className="flame-icon">🔥</span>
+              <span><strong>59초대 클리어!</strong> 룰렛 보상금 2배 찬스 발동!</span>
+              <span className="flame-icon">🔥</span>
+            </div>
+          )}
 
           {isNewRecord && (
             <div className="new-record-banner">

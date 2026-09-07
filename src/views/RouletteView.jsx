@@ -15,6 +15,18 @@ const ROULETTE_SLOTS = [
 const SECTOR_ANGLE = 360 / ROULETTE_SLOTS.length; // 60도
 
 export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, onHome, onBack }) {
+  // 짝맞추기 1분 미만(59.9초 이하) 달성으로 인한 2배 찬스 여부 확인
+  const isDoubleChance = useMemo(() => {
+    try {
+      const hasDoubleFlag = localStorage.getItem(`fc_double_reward_${dayData.key}`) === 'true';
+      const bestScore = localStorage.getItem(`fc_best_match_${dayData.key}`);
+      const isFastRecord = bestScore ? Number(bestScore) < 60000 : false;
+      return hasDoubleFlag || isFastRecord;
+    } catch {
+      return false;
+    }
+  }, [dayData.key]);
+
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
   const [result, setResult] = useState(null);
@@ -34,7 +46,6 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
     const selectedSlot = ROULETTE_SLOTS[targetIdx];
 
     // 60도 섹터의 중앙 각도 계산 (상단 12시 방향 포인터 기준)
-    // 12시 포인터에 오려면 각 슬롯의 회전 오프셋을 역방향 계산
     const targetCenterAngle = 360 - (targetIdx * SECTOR_ANGLE + SECTOR_ANGLE / 2);
     const totalExtraSpins = 360 * 6; // 6바퀴 회전
     const currentBase = Math.floor(rotationDeg / 360) * 360;
@@ -63,13 +74,14 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
       if (selectedSlot.isWin) {
         playJackpotSound();
         if (onWinReward && selectedSlot.amount > 0) {
-          onWinReward(selectedSlot.amount);
+          const payoutAmount = isDoubleChance ? selectedSlot.amount * 2 : selectedSlot.amount;
+          onWinReward(payoutAmount);
         }
       } else {
         playFailSound();
       }
     }, 4500);
-  }, [isSpinning, rotationDeg, onWinReward]);
+  }, [isSpinning, rotationDeg, onWinReward, isDoubleChance]);
 
   useEffect(() => {
     return () => {
@@ -92,14 +104,22 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
 
       {/* ── 룰렛 본문 ── */}
       <div className="roulette-body">
-        {/* 상단 안내 배너 */}
-        <div className="roulette-banner">
-          <Sparkles size={20} className="sparkle-icon" />
-          <span>총 6개 슬롯 (1/6 동일 확률) · 10,000원 / 20,000원 / 꽝</span>
-        </div>
+        {/* 상단 안내 배너 (2배 찬스 발동 시 불꽃 강조) */}
+        {isDoubleChance ? (
+          <div className="roulette-banner double-active">
+            <span className="flame-icon">🔥</span>
+            <span><strong>[보상금 2배 찬스 발동]</strong> 짝맞추기 59초대 클리어 특전! (1만→2만 / 2만→4만)</span>
+            <span className="flame-icon">🔥</span>
+          </div>
+        ) : (
+          <div className="roulette-banner">
+            <Sparkles size={20} className="sparkle-icon" />
+            <span>총 6개 슬롯 (1/6 동일 확률) · 10,000원 / 20,000원 / 꽝</span>
+          </div>
+        )}
 
         {/* 룰렛 휠 컨테이너 */}
-        <div className="wheel-wrapper">
+        <div className={`wheel-wrapper ${isDoubleChance ? 'double-glow' : ''}`}>
           {/* 상단 지시 화살표 포인터 */}
           <div className="wheel-pointer" />
 
@@ -114,7 +134,7 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
             }}
           >
             <svg viewBox="0 0 300 300" className="wheel-svg">
-              <circle cx="150" cy="150" r="148" fill="#0d2218" stroke="#f0b93b" strokeWidth="4" />
+              <circle cx="150" cy="150" r="148" fill="#0d2218" stroke={isDoubleChance ? "#ff9800" : "#f0b93b"} strokeWidth="4" />
               {ROULETTE_SLOTS.map((slot, i) => {
                 const angle = i * 60;
                 const startAngle = (angle - 90) * (Math.PI / 180);
@@ -130,12 +150,17 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
                 // 텍스트 위치 (섹터 중앙)
                 const textAngle = angle + 30;
 
+                // 2배 찬스 적용 시 슬롯 표기 금액 2배로 표시
+                const displayLabel = slot.isWin && isDoubleChance
+                  ? `${(slot.amount * 2).toLocaleString()}원`
+                  : slot.label;
+
                 return (
                   <g key={slot.id}>
                     <path
                       d={pathData}
                       fill={slot.color}
-                      stroke="#f0b93b"
+                      stroke={isDoubleChance ? "#ff9800" : "#f0b93b"}
                       strokeWidth="1.5"
                     />
                     <g transform={`rotate(${textAngle}, 150, 150)`}>
@@ -148,19 +173,19 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
                         textAnchor="middle"
                         dominantBaseline="middle"
                       >
-                        {slot.label}
+                        {displayLabel}
                       </text>
                       {slot.isWin && (
                         <text
                           x="150"
                           y="68"
-                          fill="#ffd700"
+                          fill={isDoubleChance ? "#ffeb3b" : "#ffd700"}
                           fontSize="9"
-                          fontWeight="700"
+                          fontWeight="800"
                           textAnchor="middle"
                           dominantBaseline="middle"
                         >
-                          ★보상★
+                          {isDoubleChance ? "★2배대박★" : "★보상★"}
                         </text>
                       )}
                     </g>
@@ -168,8 +193,8 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
                 );
               })}
               {/* 중앙 허브 핀 */}
-              <circle cx="150" cy="150" r="24" fill="#0a1a12" stroke="#f0b93b" strokeWidth="3" />
-              <circle cx="150" cy="150" r="12" fill="#f0b93b" />
+              <circle cx="150" cy="150" r="24" fill="#0a1a12" stroke={isDoubleChance ? "#ff9800" : "#f0b93b"} strokeWidth="3" />
+              <circle cx="150" cy="150" r="12" fill={isDoubleChance ? "#ff9800" : "#f0b93b"} />
             </svg>
           </div>
         </div>
@@ -177,11 +202,15 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         {/* 룰렛 돌리기 액션 버튼 */}
         <div className="roulette-action-area">
           <button
-            className={`btn-spin-wheel ${isSpinning ? 'spinning' : ''}`}
+            className={`btn-spin-wheel ${isSpinning ? 'spinning' : ''} ${isDoubleChance ? 'double-btn' : ''}`}
             onClick={handleSpin}
             disabled={isSpinning}
           >
-            {isSpinning ? '두근두근 회전 중...' : '🎰 룰렛 START!'}
+            {isSpinning
+              ? '두근두근 회전 중...'
+              : isDoubleChance
+                ? '🔥 2배 찬스 룰렛 START!'
+                : '🎰 룰렛 START!'}
           </button>
         </div>
       </div>
@@ -191,23 +220,39 @@ export default function RouletteView({ dayData, rewardBalance = 0, onWinReward, 
         <div className="roulette-modal-overlay">
           <div className={`roulette-result-card ${result.isWin ? 'win' : 'lose'}`}>
             <div className="result-icon-anim">
-              {result.isWin ? '🎉 💰 🎉' : '💨 ❌ 💨'}
+              {result.isWin ? (isDoubleChance ? '🔥 👑 💰 👑 🔥' : '🎉 💰 🎉') : '💨 ❌ 💨'}
             </div>
+
+            {result.isWin && isDoubleChance && (
+              <div className="double-win-badge">
+                🔥 짝맞추기 59초대 클리어 2배 보너스 적용! 🔥
+              </div>
+            )}
+
             <div className="result-title">
               {result.isWin ? '축하합니다! 당첨되었습니다!' : '아쉽게도 꽝입니다!'}
             </div>
+
             <div className={`result-prize-box ${result.isWin ? 'win' : ''}`}>
               <div className="prize-label">룰렛 결과</div>
-              <div className="prize-val">{result.label}</div>
+              <div className="prize-val">
+                {result.isWin && isDoubleChance
+                  ? `${(result.amount * 2).toLocaleString()}원 (2배!)`
+                  : result.label}
+              </div>
             </div>
+
             {result.isWin && (
               <div className="result-total-chip">
-                💰 누적 총 보상금: <strong>{(rewardBalance + result.amount).toLocaleString()}원</strong>
+                💰 누적 총 보상금: <strong>{(rewardBalance + (isDoubleChance ? result.amount * 2 : result.amount)).toLocaleString()}원</strong>
               </div>
             )}
+
             <p className="result-desc">
               {result.isWin
-                ? `${result.label} 보상에 당첨되었습니다! 메인 화면의 누적 보상금에 즉시 축적되었습니다.`
+                ? isDoubleChance
+                  ? `59초대 클리어 특전으로 2배인 ${(result.amount * 2).toLocaleString()}원이 메인 누적 보상금에 즉시 적립되었습니다!`
+                  : `${result.label} 보상에 당첨되었습니다! 메인 화면의 누적 보상금에 즉시 축적되었습니다.`
                 : '비록 꽝이지만 30단어를 모두 완벽하게 정복하셨습니다! 다음 DAY에서 대박을 노려보세요!'}
             </p>
             <div className="result-actions">

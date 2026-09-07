@@ -2682,6 +2682,93 @@ button {
   margin-left: 2px;
 }
 
+/* ============================================================
+   보상금 2배 찬스 (Double Reward Chance) 스타일
+   ============================================================ */
+
+/* 1. 짝맞추기 결과 화면 2배 획득 배너 */
+.double-chance-earned-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(249, 115, 22, 0.35));
+  border: 1.5px solid #f97316;
+  border-radius: var(--r-full);
+  padding: 8px 18px;
+  color: #ffedd5;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.45);
+  animation: pulseFlame 1.2s infinite alternate ease-in-out;
+}
+
+.double-chance-earned-banner strong {
+  color: #ffedd5;
+  text-shadow: 0 0 10px rgba(255, 237, 213, 0.6);
+}
+
+@keyframes pulseFlame {
+  from { transform: scale(1); box-shadow: 0 0 12px rgba(249, 115, 22, 0.4); }
+  to { transform: scale(1.04); box-shadow: 0 0 24px rgba(239, 68, 68, 0.8); }
+}
+
+/* 2. 룰렛 상단 2배 활성 배너 */
+.roulette-banner.double-active {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(249, 115, 22, 0.3));
+  border-color: #f97316;
+  color: #ffedd5;
+  font-weight: 800;
+  box-shadow: 0 0 14px rgba(249, 115, 22, 0.35);
+  animation: pulseFlame 1.5s infinite alternate ease-in-out;
+}
+
+/* 3. 룰렛 휠 2배 불꽃 글로우 */
+.wheel-wrapper.double-glow {
+  filter: drop-shadow(0 0 22px rgba(249, 115, 22, 0.5));
+}
+
+/* 4. 2배 룰렛 시작 버튼 */
+.btn-spin-wheel.double-btn {
+  background: linear-gradient(135deg, #ea580c, #dc2626) !important;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.5) !important;
+  color: #fff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  animation: pulseFlame 1s infinite alternate ease-in-out;
+}
+
+/* 5. 룰렛 당첨 모달 2배 뱃지 */
+.double-win-badge {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.86rem;
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.5);
+  animation: pulseFlame 1s infinite alternate ease-in-out;
+}
+
+/* 6. 세트 선택 카드 2배 태그 및 글로우 */
+.roulette-set-card.double-glow {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.35) !important;
+}
+
+.double-tag-pill {
+  background: #ea580c;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: var(--r-full);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+
 
 
 
