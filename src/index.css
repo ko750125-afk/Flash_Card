@@ -1526,3 +1526,655 @@ button {
   color: var(--text-dim);
 }
 
+/* ============================================================
+   스피드 퀴즈 특별 배너 (세트 선택 화면 상단)
+   ============================================================ */
+.speed-test-banner-card {
+  background: linear-gradient(135deg, rgba(240, 185, 59, 0.22) 0%, rgba(240, 185, 59, 0.08) 60%, rgba(74, 222, 128, 0.12) 100%);
+  border: 1.5px solid rgba(240, 185, 59, 0.65);
+  border-radius: var(--r);
+  padding: 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 6px 24px rgba(240, 185, 59, 0.25), inset 0 0 16px rgba(240, 185, 59, 0.12);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+  animation: bannerGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes bannerGlow {
+  0% { box-shadow: 0 4px 18px rgba(240, 185, 59, 0.2); }
+  100% { box-shadow: 0 6px 28px rgba(240, 185, 59, 0.45); }
+}
+
+.speed-test-banner-card:active {
+  transform: scale(0.98);
+}
+
+.speed-test-banner-card:hover {
+  border-color: #f0b93b;
+  transform: translateY(-2px);
+}
+
+.st-banner-badge {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+  background: #f0b93b;
+  color: #122215;
+}
+
+.st-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.st-banner-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  animation: pulseIcon 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.st-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.st-banner-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.st-banner-desc {
+  font-size: 0.76rem;
+  color: rgba(240, 235, 224, 0.8);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.st-banner-desc strong {
+  color: #ffd700;
+}
+
+/* ============================================================
+   스피드 퀴즈 테스트 화면 (SpeedTestView)
+   ============================================================ */
+.speed-test-view {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.test-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(14px + var(--safe-t)) 20px 10px;
+  flex-shrink: 0;
+}
+
+.test-hdr-center {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+
+.test-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.test-sub {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #fb923c;
+  margin-top: 1px;
+}
+
+.test-timer-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.timer-sec {
+  font-size: 0.92rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.timer-danger {
+  color: #f87171 !important;
+}
+
+.timer-danger-icon {
+  color: #f87171 !important;
+  animation: pulseDanger 0.6s infinite alternate;
+}
+
+@keyframes pulseDanger {
+  from { transform: scale(1); }
+  to { transform: scale(1.3); }
+}
+
+.test-bars-wrap {
+  padding: 0 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.test-time-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.test-time-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #f0b93b);
+  transition: width 1s linear;
+}
+
+.test-time-fill.danger {
+  background: #ef4444;
+}
+
+.test-prog-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.test-score-chip {
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* 퀴즈 본문 카드 */
+.test-card-body {
+  flex: 1;
+  padding: 10px 20px calc(24px + var(--safe-b));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 540px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.test-question-box {
+  background: var(--surface);
+  border: 1.5px solid var(--border-s);
+  border-radius: 20px;
+  padding: 32px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  min-height: 140px;
+}
+
+.test-word-en {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 7vw, 2.6rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.test-btn-tts {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.test-btn-tts:active {
+  transform: scale(0.9);
+}
+
+.test-choices-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  flex: 1;
+}
+
+.test-choice-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--text);
+  font-size: 0.96rem;
+  font-weight: 600;
+  text-align: left;
+  line-height: 1.35;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.1s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.test-choice-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  background: var(--surface-h);
+}
+
+.test-choice-btn:hover:not(:disabled) {
+  background: var(--surface-h);
+  border-color: rgba(240, 185, 59, 0.4);
+}
+
+.choice-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.choice-text {
+  flex: 1;
+  word-break: keep-all;
+}
+
+.test-choice-btn.correct {
+  background: rgba(74, 222, 128, 0.2) !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.35);
+}
+
+.test-choice-btn.correct .choice-badge {
+  background: #4ade80;
+  color: #122115;
+}
+
+.test-choice-btn.wrong {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #f87171 !important;
+  animation: wrongShake 0.4s ease;
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.test-choice-btn.wrong .choice-badge {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* 퀴즈 결과 박스 */
+.test-result-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px calc(40px + var(--safe-b));
+  text-align: center;
+  max-width: 440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.res-emoji {
+  font-size: 3.8rem;
+  margin-bottom: 12px;
+}
+
+.res-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.4px;
+}
+
+.res-desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin-bottom: 24px;
+}
+
+.res-stat-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.stat-pill {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-pill .lbl {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.stat-pill .val {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.stat-pill .val.g { color: var(--green); }
+.stat-pill .val.a { color: var(--accent); }
+
+.res-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-roulette-enter {
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0b93b, #d97706);
+  color: #122114;
+  box-shadow: 0 6px 24px rgba(240, 185, 59, 0.45);
+  animation: pulseEnter 1.8s infinite;
+}
+
+@keyframes pulseEnter {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.btn-retry {
+  padding: 15px;
+  font-size: 0.95rem;
+}
+
+/* ============================================================
+   행운의 룰렛 화면 (RouletteView)
+   ============================================================ */
+.roulette-view {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.roulette-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(14px + var(--safe-t)) 20px 10px;
+  flex-shrink: 0;
+}
+
+.roulette-hdr-info {
+  flex: 1;
+}
+
+.roulette-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.roulette-sub {
+  font-size: 0.74rem;
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+.roulette-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px calc(36px + var(--safe-b));
+  gap: 20px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.roulette-banner {
+  background: rgba(240, 185, 59, 0.12);
+  border: 1px solid rgba(240, 185, 59, 0.3);
+  border-radius: var(--r-full);
+  padding: 8px 16px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffd700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.wheel-wrapper {
+  position: relative;
+  width: 290px;
+  height: 290px;
+  margin: 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 26px solid #f0b93b;
+  z-index: 10;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+}
+
+.wheel-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 24px rgba(240, 185, 59, 0.3);
+}
+
+.wheel-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.roulette-action-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-spin-wheel {
+  width: 100%;
+  max-width: 320px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #f0b93b, #d97706);
+  color: #122215;
+  border: none;
+  border-radius: var(--r-full);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  box-shadow: 0 8px 28px rgba(240, 185, 59, 0.45);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-spin-wheel:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.btn-spin-wheel.spinning {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* 룰렛 결과 모달 */
+.roulette-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+
+.roulette-result-card {
+  background: #11261b;
+  border: 1.5px solid var(--border-s);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  padding: 32px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+  animation: modalPop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.1);
+}
+
+.roulette-result-card.win {
+  border-color: #f0b93b;
+  box-shadow: 0 20px 54px rgba(240, 185, 59, 0.35);
+}
+
+.result-icon-anim {
+  font-size: 3rem;
+}
+
+.result-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.result-prize-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 28px;
+  margin: 4px 0;
+  width: 100%;
+}
+
+.result-prize-box.win {
+  background: linear-gradient(135deg, rgba(240, 185, 59, 0.2), rgba(74, 222, 128, 0.15));
+  border-color: #f0b93b;
+}
+
+.prize-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.prize-val {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffd700;
+}
+
+.result-prize-box:not(.win) .prize-val {
+  color: var(--text-dim);
+}
+
+.result-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+

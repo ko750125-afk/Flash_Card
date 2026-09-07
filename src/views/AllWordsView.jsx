@@ -63,7 +63,7 @@ export default function AllWordsView({
           </button>
           <div className="aw-header-info">
             <div className="aw-header-title">
-              {dayData.label} 전체 단어
+              {dayData.label} 전체 리스트
             </div>
             <div className="aw-header-topic">{dayData.topic}</div>
           </div>

@@ -6,6 +6,8 @@ import SetSelectView from './views/SetSelectView';
 import StudyView from './views/StudyView';
 import ReviewView from './views/ReviewView';
 import AllWordsView from './views/AllWordsView';
+import SpeedTestView from './views/SpeedTestView';
+import RouletteView from './views/RouletteView';
 import './index.css';
 
 export default function App() {
@@ -14,7 +16,7 @@ export default function App() {
   const seenWords  = useLocalSet('fc_seen');     // 학습 완료(본) 단어 ID Set
 
   /* ── 내비게이션 상태 ── */
-  const [view, setView]               = useState('home');     // 'home' | 'setSelect' | 'study' | 'review'
+  const [view, setView]               = useState('home');     // 'home' | 'setSelect' | 'study' | 'review' | 'allWords' | 'speedTest' | 'roulette'
   const [currentDayKey, setCurrentDayKey]   = useState(null); // 'DAY01' ...
   const [currentSetIdx, setCurrentSetIdx]   = useState(null); // 0 | 1 | 2 | 'all'
 
@@ -64,6 +66,10 @@ export default function App() {
   const goReview = useCallback(() => setView('review'), []);
 
   const goAllWords = useCallback(() => setView('allWords'), []);
+
+  const goSpeedTest = useCallback(() => setView('speedTest'), []);
+
+  const goRoulette = useCallback(() => setView('roulette'), []);
 
   /** 학습 완료 시 해당 단어들을 "본 것"으로 기록 */
   const handleStudyComplete = useCallback((wordIds) => {
@@ -135,6 +141,7 @@ export default function App() {
           seenWords={seenWords.set}
           onSelectSet={goStudy}
           onSelectAllWords={goAllWords}
+          onGoSpeedTest={goSpeedTest}
           onBack={goHome}
         />
       )}
@@ -145,6 +152,23 @@ export default function App() {
           memorized={memorized.set}
           toggleMemorized={memorized.toggle}
           onWordSeen={handleWordSeen}
+          onBack={() => goSetSelect(currentDayKey)}
+        />
+      )}
+
+      {view === 'speedTest' && currentDayData && (
+        <SpeedTestView
+          dayData={currentDayData}
+          allWordsData={WORDS_DATA}
+          onCompleteSuccess={goRoulette}
+          onBack={() => goSetSelect(currentDayKey)}
+        />
+      )}
+
+      {view === 'roulette' && currentDayData && (
+        <RouletteView
+          dayData={currentDayData}
+          onHome={goHome}
           onBack={() => goSetSelect(currentDayKey)}
         />
       )}

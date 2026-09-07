@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Zap, Gift } from 'lucide-react';
 import { speak } from '../utils/speech';
 
 const SET_META = [
@@ -8,10 +8,11 @@ const SET_META = [
 ];
 
 export default function SetSelectView({
-  dayData, memorized, seenWords, onSelectSet, onSelectAllWords, onBack,
+  dayData, memorized, seenWords, onSelectSet, onSelectAllWords, onGoSpeedTest, onBack,
 }) {
   const allWords   = dayData.sets.flat();
   const totalMem   = allWords.filter(w => memorized.has(w.id)).length;
+  const isAllMastered = totalMem === allWords.length && allWords.length > 0;
 
   const getSetInfo = (setIdx) => {
     const words    = dayData.sets[setIdx];
@@ -41,6 +42,28 @@ export default function SetSelectView({
       </div>
 
       <div className="set-list">
+        {/* 🎁 30단어 마스터 완료 시 퀴즈 & 룰렛 보상 도전 특별 배너 */}
+        {isAllMastered && (
+          <div
+            className="speed-test-banner-card"
+            onClick={onGoSpeedTest}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => e.key === 'Enter' && onGoSpeedTest && onGoSpeedTest()}
+          >
+            <div className="st-banner-badge">🎁 특별 보상 챌린지</div>
+            <div className="st-banner-content">
+              <div className="st-banner-icon">🎰</div>
+              <div className="st-banner-text">
+                <div className="st-banner-title">⚡ 스피드 퀴즈 & 룰렛 보상!</div>
+                <div className="st-banner-desc">
+                  타이머 내 4지선다 통과 시 <strong>최대 20,000원 룰렛</strong> 기회 획득!
+                </div>
+              </div>
+              <ChevronRight size={20} color="#f0b93b" />
+            </div>
+          </div>
+        )}
         {/* SET 1~3 */}
         {SET_META.map((meta, i) => {
           const info = getSetInfo(i);
@@ -97,10 +120,10 @@ export default function SetSelectView({
           <div className="sc-icon">📋</div>
           <div className="sc-body">
             <div className="sc-status">
-              {totalMem === 30 ? '🎁 30단어 정복 완료' : `한눈에 전체 데이터 보기 · 남은 단어 ${30 - totalMem}개`}
+              {totalMem === 30 ? '🎁 30단어 정복 완료' : `전체 단어장 보기 · 남은 단어 ${30 - totalMem}개`}
             </div>
-            <div className="sc-name">30단어 전체 한눈에 보기</div>
-            <div className="sc-range">전체 리스트 · 터치 시 발음 & 즉시 암기 체크</div>
+            <div className="sc-name">전체 리스트 보기</div>
+            <div className="sc-range">한눈에 전체 보기 · 터치 시 발음 & 즉시 암기 체크</div>
           </div>
           <div className="sc-stat">
             <div className="sc-mem">{totalMem}</div>
