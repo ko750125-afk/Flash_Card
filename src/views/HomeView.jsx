@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronRight, BookOpen, Settings } from 'lucide-react';
 import { speak } from '../utils/speech';
 import BackupModal from '../components/BackupModal';
+import { useDragScroll } from '../hooks/useDragScroll';
 
 // DAY01~DAY40 전체 슬롯 생성
 const ALL_DAY_KEYS = Array.from({ length: 40 }, (_, i) =>
@@ -14,6 +15,7 @@ export default function HomeView({
   onRestore, onClearAll,
 }) {
   const [isBackupOpen, setIsBackupOpen] = useState(false);
+  const { containerRef, isGrabbing, events, hasDraggedRef } = useDragScroll();
 
   // 빠른 접근을 위한 맵
   const dataMap = Object.fromEntries(wordsData.map(d => [d.key, d]));
@@ -48,7 +50,11 @@ export default function HomeView({
   };
 
   return (
-    <div className="home-view">
+    <div
+      className={`home-view ${isGrabbing ? 'grabbing' : ''}`}
+      ref={containerRef}
+      {...events}
+    >
       {/* ── 스티키 헤더 ── */}
       <div className="home-sticky">
         <div>
@@ -114,7 +120,7 @@ export default function HomeView({
               <div
                 key={dayKey}
                 className={`day-card ${locked ? 'locked' : ''} ${status === 'completed' ? 'completed' : ''}`}
-                onClick={() => !locked && onSelectDay(dayKey)}
+                onClick={() => !locked && !hasDraggedRef.current && onSelectDay(dayKey)}
                 role={locked ? undefined : 'button'}
                 tabIndex={locked ? -1 : 0}
                 onKeyDown={e => !locked && e.key === 'Enter' && onSelectDay(dayKey)}
