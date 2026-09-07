@@ -35,11 +35,18 @@ export function useLocalSet(storageKey) {
     });
   }, [storageKey]);
 
+  /** 전체 교체 (백업 복원용) */
+  const replaceSet = useCallback((items) => {
+    const next = new Set(items || []);
+    setSet(next);
+    localStorage.setItem(storageKey, JSON.stringify([...next]));
+  }, [storageKey]);
+
   /** 전체 초기화 */
   const clear = useCallback(() => {
     localStorage.removeItem(storageKey);
     setSet(new Set());
   }, [storageKey]);
 
-  return { set, toggle, addMany, clear };
+  return { set, toggle, addMany, replaceSet, clear };
 }

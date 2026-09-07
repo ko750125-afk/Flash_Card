@@ -1,5 +1,7 @@
-import { ChevronRight, BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronRight, BookOpen, Settings } from 'lucide-react';
 import { speak } from '../utils/speech';
+import BackupModal from '../components/BackupModal';
 
 // DAY01~DAY40 전체 슬롯 생성
 const ALL_DAY_KEYS = Array.from({ length: 40 }, (_, i) =>
@@ -9,7 +11,10 @@ const ALL_DAY_KEYS = Array.from({ length: 40 }, (_, i) =>
 export default function HomeView({
   wordsData, memorized, seenWords, completedDays, reviewWords,
   onSelectDay, onGoReview,
+  onRestore, onClearAll,
 }) {
+  const [isBackupOpen, setIsBackupOpen] = useState(false);
+
   // 빠른 접근을 위한 맵
   const dataMap = Object.fromEntries(wordsData.map(d => [d.key, d]));
 
@@ -50,11 +55,31 @@ export default function HomeView({
           <h1 className="home-title">📚 영단어 마스터</h1>
           <p className="home-subtitle">DAY01 ~ DAY40 (총 1,200단어)</p>
         </div>
-        <div className="total-chip">
-          <div className="num">{totalMemorized}</div>
-          <div className="lbl">/ {totalWords} 암기</div>
+        <div className="hdr-right-row">
+          <div className="total-chip">
+            <div className="num">{totalMemorized}</div>
+            <div className="lbl">/ {totalWords} 암기</div>
+          </div>
+          <button
+            className="btn-icon-setting"
+            onClick={() => setIsBackupOpen(true)}
+            aria-label="데이터 백업 및 복원"
+            title="데이터 백업 및 복원"
+          >
+            <Settings size={20} />
+          </button>
         </div>
       </div>
+
+      {/* ── 백업 & 복원 모달 ── */}
+      <BackupModal
+        isOpen={isBackupOpen}
+        onClose={() => setIsBackupOpen(false)}
+        memorizedSet={memorized}
+        seenSet={seenWords}
+        onRestore={onRestore}
+        onClearAll={onClearAll}
+      />
 
       {/* ── 복습 배너 ── */}
       {reviewWords.length > 0 && (

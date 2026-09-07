@@ -92,6 +92,18 @@ export default function App() {
       ? `SET ${currentSetIdx + 1}`
       : '';
 
+  /** 백업 데이터 복원 */
+  const handleRestore = useCallback(({ memorized: memList, seen: seenList }) => {
+    memorized.replaceSet(memList);
+    seenWords.replaceSet(seenList);
+  }, [memorized, seenWords]);
+
+  /** 학습 기록 전체 초기화 */
+  const handleClearAll = useCallback(() => {
+    memorized.clear();
+    seenWords.clear();
+  }, [memorized, seenWords]);
+
   /* ── 렌더 ── */
   return (
     <>
@@ -104,6 +116,8 @@ export default function App() {
           reviewWords={reviewWords}
           onSelectDay={goSetSelect}
           onGoReview={goReview}
+          onRestore={handleRestore}
+          onClearAll={handleClearAll}
         />
       )}
 
